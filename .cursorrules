@@ -76,14 +76,6 @@ As CTO, I will:
 * `@brillow/*` import alias for cleaner imports
 * `src/` directory structure for better organization
 
+
 ### Project Structure
-src/
-  app/
-    components/      # React components
-      table/        # Table-related components
-      ui/          # Shared UI components
-    store/          # Zustand store
-    types/          # TypeScript interfaces/types
-    utils/          # Helper functions
-    layout.tsx
-    page.tsx
+For current project structure, always refer to the `<relevant_files>` tag which provides real-time access to the actual file tree.
