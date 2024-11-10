@@ -3,25 +3,110 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Modern dark theme colors */
+  --background: #0a0a0a;
+  --surface: rgba(30, 30, 30, 0.7);
+  --surface-glass: rgba(40, 40, 40, 0.4);
+  --header-bg: rgba(50, 50, 50, 0.95);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-light: rgba(255, 255, 255, 0.08);
+  --text-primary: rgba(255, 255, 255, 0.95);
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --accent-blue: #60a5fa;
+  --accent-purple: #8b5cf6;
+  --accent-glow: rgba(96, 165, 250, 0.1);
 }
 
 body {
-  color: var(--foreground);
+  color: var(--text-primary);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background-image: 
+    radial-gradient(circle at top right, var(--accent-purple), transparent 40%),
+    radial-gradient(circle at bottom left, var(--accent-blue), transparent 40%);
+  min-height: 100vh;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+@layer components {
+  /* Table Container */
+  .table-container {
+    @apply relative overflow-hidden rounded-xl;
+    background: var(--surface-glass);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    box-shadow: 
+      0 4px 24px -1px rgba(0, 0, 0, 0.2),
+      0 0 0 1px var(--border),
+      inset 0 0 32px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Base Table */
+  .table-base {
+    @apply w-full text-sm border-collapse;
+  }
+
+  /* Header Styles */
+  .table-header {
+    @apply px-6 py-3 font-medium relative text-left border-r last:border-r-0 whitespace-nowrap;
+    background: var(--header-bg);
+    border-color: var(--border);
+    color: var(--text-primary);
+  }
+
+  /* Header Row */
+  .table-header-row {
+    @apply border-b;
+    border-color: var(--border);
+  }
+
+  /* Resize Handle */
+  .resize-handle {
+    @apply absolute -right-[1px] top-0 h-full w-[1px] cursor-col-resize select-none touch-none;
+  }
+  .resize-handle-active {
+    @apply bg-blue-500;
+    box-shadow: 0 0 10px var(--accent-blue);
+  }
+  .resize-handle-inactive {
+    @apply bg-gray-600 hover:bg-blue-500;
+    transition: all 0.2s ease;
+  }
+
+  /* Table Body */
+  .table-body {
+    @apply divide-y;
+    border-color: var(--border-light);
+  }
+
+  /* Table Row */
+  .table-row {
+    @apply transition-colors;
+    background: transparent;
+  }
+  .table-row:hover {
+    background: var(--surface);
+  }
+
+  /* Table Cell */
+  .table-cell {
+    @apply px-6 py-3 whitespace-nowrap border-r last:border-r-0;
+    color: var(--text-secondary);
+    border-color: var(--border);
+  }
+
+  /* Empty State */
+  .table-empty {
+    @apply px-6 py-8 text-center;
+    color: var(--text-secondary);
+    background: var(--surface);
+  }
+
+  /* Link styles */
+  .table-link {
+    @apply transition-all duration-200;
+    color: var(--accent-blue);
+  }
+  .table-link:hover {
+    @apply underline;
+    text-shadow: 0 0 8px var(--accent-glow);
   }
 }

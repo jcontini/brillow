@@ -40,6 +40,37 @@ As CTO, I will:
   * Children for content flexibility
 * Loading states: Use React Suspense boundaries
 
+### TanStack Table v8 Patterns
+* Table header structure must use:
+  ```typescript
+  table.getHeaderGroups().map(headerGroup => (
+    headerGroup.headers.map(header => ...)
+  ))
+  ```
+* Access header-related operations through header object:
+  - Context: `header.getContext()`
+  - Resize: `header.getResizeHandler()`
+  - Column props: `header.column.propertyName`
+* Column definitions should use columnHelper:
+  ```typescript
+  const columnHelper = createColumnHelper<TableType>()
+  const columns = [
+    columnHelper.accessor('field', {
+      header: 'Header',
+      cell: info => info.getValue()
+    })
+  ]
+  ```
+* Common table features require explicit enablement:
+  ```typescript
+  const table = useReactTable({
+    enableColumnResizing: true,
+    enableSorting: true,
+    enableFilters: true,
+    // other features...
+  })
+  ```
+
 ### Documentation Standards
 * Keep code self-documenting - clear naming over comments
 * Update README.md for user-facing changes
