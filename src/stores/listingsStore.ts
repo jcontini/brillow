@@ -7,6 +7,7 @@ interface ListingsState {
   importListings: (newListings: HouseListing[]) => void
   addListing: (listing: HouseListing) => void
   removeListing: (id: string) => void
+  updateListing: (id: string, updates: Partial<HouseListing>) => void
 }
 
 export const useListingsStore = create<ListingsState>()(
@@ -20,10 +21,16 @@ export const useListingsStore = create<ListingsState>()(
         set((state) => ({ 
           listings: state.listings.filter(listing => listing.id !== id) 
         })),
+      updateListing: (id, updates) =>
+        set((state) => ({
+          listings: state.listings.map(listing =>
+            listing.id === id ? { ...listing, ...updates } : listing
+          )
+        })),
     }),
     {
-      name: 'listings-storage', // unique name for localStorage key
-      version: 1, // useful for migrations if we change the structure later
+      name: 'listings-storage',
+      version: 1,
     }
   )
 )

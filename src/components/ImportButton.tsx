@@ -2,40 +2,35 @@
 
 import { useListingsStore } from '@/stores/listingsStore'
 import { validateImportData } from '@/utils/importExport'
+import { FiUpload } from 'react-icons/fi'
 
 export function ImportButton() {
-  const importListings = useListingsStore(state => state.importListings)
+  const importListings = useListingsStore((state) => state.importListings)
 
-  const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
+  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
     if (!file) return
 
     try {
       const text = await file.text()
-      const jsonData = JSON.parse(text)
-      const validatedData = validateImportData(jsonData)
-      
-      importListings(validatedData.data.listings)
-      
-      // Reset the input
-      event.target.value = ''
+      const json = JSON.parse(text)
+      const validData = validateImportData(json)
+      importListings(validData.data.listings)
     } catch (error) {
       console.error('Import failed:', error)
-      // TODO: Add toast notification for error
     }
   }
 
   return (
-    <div className="relative">
+    <label className="action-button">
+      <FiUpload className="w-4 h-4" />
+      <span>Import Listings</span>
       <input
         type="file"
         accept=".json"
         onChange={handleImport}
-        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+        className="hidden"
       />
-      <button className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-500 hover:bg-blue-600 transition-colors">
-        Import Listings
-      </button>
-    </div>
+    </label>
   )
 } 

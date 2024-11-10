@@ -40,7 +40,7 @@ As CTO, I will:
   * Children for content flexibility
 * Loading states: Use React Suspense boundaries
 
-### TanStack Table v8 Patterns
+### TanStack Table Patterns
 * Table header structure must use:
   ```typescript
   table.getHeaderGroups().map(headerGroup => (
@@ -51,15 +51,20 @@ As CTO, I will:
   - Context: `header.getContext()`
   - Resize: `header.getResizeHandler()`
   - Column props: `header.column.propertyName`
-* Column definitions should use columnHelper:
+* Column definitions must use direct export pattern:
   ```typescript
+  // ✓ CORRECT: Direct column definition and export
   const columnHelper = createColumnHelper<TableType>()
-  const columns = [
+  export const columns = [
     columnHelper.accessor('field', {
       header: 'Header',
       cell: info => info.getValue()
     })
   ]
+
+  // ✗ WRONG: Do not wrap columns in getter function
+  // This causes type issues and unnecessary complexity
+  export const getColumns = (columnHelper) => [ ... ]
   ```
 * Common table features require explicit enablement:
   ```typescript

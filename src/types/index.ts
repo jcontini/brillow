@@ -1,5 +1,5 @@
 export interface HouseListing {
-    id: string
+    id?: string
     rating: number          // 1-5 stars
     link: string           // URL
     neighborhood: string
@@ -8,7 +8,6 @@ export interface HouseListing {
     bathrooms: number
     price: number          // Numeric value
     squareFeet: number
-    unit: string | null    // e.g., "House", "Apt", "Unit 123"
     availability: string   // ISO date format
     notes: string
     dateAdded: string     // ISO date format

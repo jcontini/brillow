@@ -29,7 +29,7 @@ body {
 @layer components {
   /* Table Container */
   .table-container {
-    @apply relative overflow-hidden rounded-xl;
+    @apply relative overflow-x-auto rounded-xl;
     background: var(--surface-glass);
     backdrop-filter: blur(12px);
     border: 1px solid var(--border);
@@ -46,7 +46,7 @@ body {
 
   /* Header Styles */
   .table-header {
-    @apply px-6 py-3 font-medium relative text-left border-r last:border-r-0 whitespace-nowrap;
+    @apply px-3 py-2 font-medium relative text-left border-r last:border-r-0 whitespace-nowrap;
     background: var(--header-bg);
     border-color: var(--border);
     color: var(--text-primary);
@@ -79,7 +79,6 @@ body {
 
   /* Table Row */
   .table-row {
-    @apply transition-colors;
     background: transparent;
   }
   .table-row:hover {
@@ -88,7 +87,7 @@ body {
 
   /* Table Cell */
   .table-cell {
-    @apply px-6 py-3 whitespace-nowrap border-r last:border-r-0;
+    @apply px-3 py-2 whitespace-nowrap border-r last:border-r-0;
     color: var(--text-secondary);
     border-color: var(--border);
   }
@@ -108,5 +107,118 @@ body {
   .table-link:hover {
     @apply underline;
     text-shadow: 0 0 8px var(--accent-glow);
+  }
+
+  .main-content {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+  }
+
+  /* Property Details Panel */
+  .property-details-panel {
+    @apply w-[400px] p-6 rounded-xl sticky top-8;
+    background: var(--surface-glass);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    box-shadow: 
+      0 4px 24px -1px rgba(0, 0, 0, 0.2),
+      0 0 0 1px var(--border),
+      inset 0 0 32px rgba(0, 0, 0, 0.2);
+  }
+
+  .property-details-panel h3 {
+    @apply m-0 mb-6 text-lg font-medium;
+    color: var(--text-primary);
+  }
+
+  .details-grid {
+    @apply flex flex-col gap-4;
+  }
+
+  .detail-item {
+    @apply flex flex-col gap-1;
+  }
+
+  .detail-item label {
+    @apply text-sm;
+    color: var(--text-secondary);
+  }
+
+  .detail-item span {
+    color: var(--text-primary);
+  }
+
+  .detail-item.notes {
+    @apply mt-2 pt-4;
+    border-top: 1px solid var(--border);
+  }
+
+  .detail-item.notes p {
+    @apply m-0 text-sm;
+    color: var(--text-secondary);
+    white-space: pre-wrap;
+  }
+
+  /* Remove the light theme hover/selected states */
+  tr.selected {
+    background: var(--surface);
+  }
+
+  tr:hover {
+    background: var(--surface);
+  }
+
+  .star-rating {
+    @apply flex gap-0;
+  }
+
+  .star-button {
+    @apply p-0 transition-colors;
+    color: var(--text-secondary);
+    opacity: 0.5;
+  }
+
+  .star-button svg {
+    @apply w-4 h-4;
+  }
+
+  .star-button:hover:not(.readonly) {
+    transform: scale(1.1);
+  }
+
+  .star-button.filled {
+    color: var(--accent-blue);
+    opacity: 1;
+  }
+
+  .star-button.readonly {
+    @apply cursor-default;
+  }
+
+  .header-container {
+    @apply flex justify-between items-center p-8;
+  }
+
+  .app-title {
+    @apply text-4xl font-medium;
+    color: var(--text-primary);
+    text-shadow: 0 0 20px var(--accent-glow);
+  }
+
+  .button-group {
+    @apply flex gap-2;
+  }
+
+  .action-button {
+    @apply flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 cursor-pointer;
+    background: var(--surface-glass);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+  }
+
+  .action-button:hover {
+    background: var(--surface);
+    border-color: var(--accent-blue);
   }
 }
