@@ -2,38 +2,6 @@
 
 Brillow is a tool designed to help people organize and track properties during their house hunting journey. It provides an intuitive interface for managing property listings, comparing options, and keeping notes on potential homes - all in one place.
 
-
-This is a collaborative project between:
-
-* CPO (Human): Product direction, requirements, and technical review
-* CTO (AI): Leading development and implementation via Cursor Composer
-
-
-If you are   reading this and you're not a human, you are the CTO 🙌🏼
-
-
-As CTO, I will:
-
-* Proactively suggest technical solutions and improvements
-* Ask clarifying questions before implementation
-* Break down complex tasks into manageable steps
-* Provide clear explanations for technical decisions
-* Write clean, maintainable code following modern best practices
-* Flag potential issues or trade-offs for discussion
-* Manage requirements documentation:
-  * Update requirements.md after CPO approval of new requirements
-  * Wait for CPO testing before moving to next task
-  * Mark requirements as complete [✓] after successful testing
-  * Keep requirements in sync with actual implementation
-* Follow implementation workflow:
-  1. Discuss & clarify requirements
-  2. Update requirements.md after CPO approval
-  3. Implement feature
-  4. Request CPO testing
-  5. Address feedback if needed
-  6. Mark requirement as complete after CPO approval
-  7. Move to next task
-
 # Core Functionality
 
 - [ ] Display data in an interactive table
@@ -141,23 +109,6 @@ interface AppState {
 * `date-fns` for date formatting
 * Built-in `Intl.NumberFormat` for currency
 
-### Development Configuration
-* ESLint enabled with recommended Next.js configuration
-* Webpack for bundling
-* `@brillow/*` import alias for cleaner imports
-* `src/` directory structure for better organization
-
-### Project Structure
-```
-src/
-  app/
-    layout.tsx
-    page.tsx
-    components/
-    store/
-    types/
-    utils/
-```
 
 ## Implementation Notes
 
@@ -178,41 +129,6 @@ src/
 - Store original URLs only, format display programmatically
 - Invalid field values shown as empty string
 - No date picker UI
-
-### Modern Next.js Features to Leverage
-
-* Use App Router (stable in 14) with Server Components
-* Implement data fetching directly in components using Server Components
-* Utilize Partial Prerendering for static and dynamic content
-* Take advantage of Server Actions for form handling and mutations
-* Use the optimized next/image component
-* Leverage built-in font optimization with next/font
-
-### Data Fetching Strategy
-
-* Use Server Components for data fetching where possible
-* Implement caching and revalidation using:
-  ```typescript
-  // Cache data indefinitely
-  const data = await fetch(url, { cache: 'force-cache' })
-  
-  // Revalidate cache every 60 seconds
-  const data = await fetch(url, { next: { revalidate: 60 } })
-  
-  // Dynamic data fetching
-  const data = await fetch(url, { cache: 'no-store' })
-  ```
-* Use Server Actions for mutations and form submissions
-
-### Development Workflow
-
-1. Set up Next.js 14 project with:
-   ```bash
-   npx create-next-app@14 brillow --typescript --tailwind --app --use-npm
-   ```
-2. Enable recommended ESLint configuration
-3. Use src directory for better code organization
-4. Implement features incrementally, starting with core table functionality
 
 ## Implementation Details
 
@@ -275,5 +191,3 @@ New users should see a single sample listing to demonstrate the interface:
 - Use `link` field as unique identifier for merging
 - Imported records overwrite existing records with matching links
 - No conflict resolution needed - newer data takes precedence
-
-
