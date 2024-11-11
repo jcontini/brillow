@@ -1,3 +1,5 @@
+import type { ColumnMeta as TanStackColumnMeta } from '@tanstack/react-table'
+
 export interface HouseListing {
     id?: string
     rating: number          // 1-5 stars
@@ -23,4 +25,11 @@ export interface AppState {
     data: {
         listings: HouseListing[]
     }
+}
+
+// Add this type augmentation
+declare module '@tanstack/react-table' {
+  interface ColumnMeta<TData extends unknown, TValue> {
+    getCellStyles?: (value: TValue) => React.CSSProperties
+  }
 } 

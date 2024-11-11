@@ -8,8 +8,8 @@
   --surface: rgba(30, 30, 30, 0.7);
   --surface-glass: rgba(40, 40, 40, 0.4);
   --header-bg: rgba(50, 50, 50, 0.95);
-  --border: rgba(255, 255, 255, 0.08);
-  --border-light: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.04);
+  --border-light: rgba(255, 255, 255, 0.04);
   --text-primary: rgba(255, 255, 255, 0.95);
   --text-secondary: rgba(255, 255, 255, 0.7);
   --accent-blue: #60a5fa;
@@ -38,22 +38,12 @@ body {
       0 0 0 1px var(--border),
       inset 0 0 32px rgba(0, 0, 0, 0.2);
     
-    /* Only show scrollbar when needed */
+    /* Always hide horizontal scrollbar */
     overflow-x: auto;
-    
-    /* Hide scrollbar by default */
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
     &::-webkit-scrollbar {
-      display: none;
-    }
-    
-    /* Show scrollbar on hover only if content overflows */
-    &:hover {
-      &::-webkit-scrollbar {
-        display: block;
-      }
-      scrollbar-width: thin;
+      display: none;  /* Chrome, Safari, Opera */
     }
   }
 
@@ -66,7 +56,7 @@ body {
   .table-header {
     @apply px-3 py-2 font-medium relative text-left border-r last:border-r-0 whitespace-nowrap cursor-pointer;
     background: var(--header-bg);
-    border-color: var(--border);
+    border-color: rgba(255, 255, 255, 0.06);
     color: var(--text-primary);
   }
 
@@ -96,7 +86,10 @@ body {
   /* Table Body */
   .table-body {
     @apply divide-y;
-    border-color: var(--border-light);
+    --tw-divide-opacity: 0.1;
+    & > tr {
+      border-color: rgba(255, 255, 255, 0.1);
+    }
   }
 
   /* Table Row */
@@ -111,7 +104,7 @@ body {
   .table-cell {
     @apply px-3 py-2 whitespace-nowrap border-r last:border-r-0;
     color: var(--text-secondary);
-    border-color: var(--border);
+    border-color: rgba(255, 255, 255, 0.06);
   }
 
   /* Empty State */
@@ -183,13 +176,24 @@ body {
     white-space: pre-wrap;
   }
 
-  /* Remove the light theme hover/selected states */
+  /* Update the selected state styling */
   tr.selected {
-    background: var(--surface);
+    background: rgba(50, 50, 50, 0.95); /* Lighter than --surface */
+    /* Enhance the glow effect */
+    box-shadow: 
+      inset 0 0 0 1px var(--accent-blue),
+      0 0 16px var(--accent-glow);
+    
+    /* Make the text more prominent */
+    & td {
+      color: var(--text-primary);
+    }
   }
 
-  tr:hover {
+  /* Keep hover state less prominent */
+  tr:hover:not(.selected) {
     background: var(--surface);
+    opacity: 0.8;
   }
 
   .star-rating {

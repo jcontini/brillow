@@ -1,4 +1,5 @@
-import { createColumnHelper } from "@tanstack/react-table"
+import { createColumnHelper, ColumnDef } from "@tanstack/react-table"
+import type { ColumnMeta as BaseColumnMeta } from "@tanstack/react-table"
 import { HouseListing } from "@/types"
 import { StarRating } from "../StarRating"
 import { format } from "date-fns"
@@ -7,6 +8,11 @@ import { FaFacebookSquare, FaShower } from "react-icons/fa"
 import { IoBedOutline } from "react-icons/io5"
 import { FiExternalLink } from "react-icons/fi"
 import { RealtorIcon } from '../icons/RealtorIcon'
+
+// Update the ColumnMeta interface with proper generic types
+export interface ColumnMeta {
+  getCellStyles?: (value: any) => React.CSSProperties
+}
 
 const columnHelper = createColumnHelper<HouseListing>()
 
@@ -24,6 +30,22 @@ const formatDate = (dateStr: string) => {
   } catch {
     return ''
   }
+}
+
+const getPricePerSqFtColor = (value: number | null) => {
+  if (value === null) return ''
+  
+  // Adjust these thresholds based on your market
+  const minValue = 1.0   // Best value - most blue
+  const maxValue = 3.0   // Worst value - no color
+  
+  // Calculate opacity based on where the value falls in the range
+  const opacity = Math.max(0, Math.min(1, 
+    1 - ((value - minValue) / (maxValue - minValue))
+  ))
+  
+  // Return background color with calculated opacity
+  return `rgba(96, 165, 250, ${opacity * 0.2})` // Using accent blue with dynamic opacity
 }
 
 export const columns = [
@@ -92,6 +114,24 @@ export const columns = [
     header: "Sq.Ft",
     cell: info => info.getValue()
   }),
+  columnHelper.accessor(row => {
+    if (!row.price || !row.squareFeet || row.squareFeet === 0) return null
+    return row.price / row.squareFeet
+  }, {
+    id: 'pricePerSqFt',
+    header: '$/ft²',
+    size: 100,
+    cell: info => {
+      const value = info.getValue()
+      if (value === null) return '-'
+      return `$${value.toFixed(2)}`
+    },
+    meta: {
+      getCellStyles: (value: number | null) => ({
+        backgroundColor: getPricePerSqFtColor(value)
+      })
+    }
+  }),
   columnHelper.accessor("availability", {
     header: "Available",
     cell: info => formatDate(info.getValue()),
@@ -101,5 +141,5 @@ export const columns = [
     header: "Added",
     cell: info => formatDate(info.getValue()),
     sortingFn: 'datetime'
-  })
+  }),
 ]

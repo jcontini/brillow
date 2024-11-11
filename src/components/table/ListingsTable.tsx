@@ -12,7 +12,7 @@ import { FiChevronUp, FiChevronDown } from 'react-icons/fi'
 import { HouseListing } from '@/types'
 import { useListingsStore } from '@/stores/listingsStore'
 import { columns } from './columns'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { PropertyDetails } from '../PropertyDetails'
 import { StarRating } from '../StarRating'
 
@@ -59,6 +59,30 @@ export function ListingsTable() {
     onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing,
   })
+
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      const rows = table.getRowModel().rows
+      if (!rows.length) return
+      
+      const currentIndex = selectedListing 
+        ? rows.findIndex(row => row.original.id === selectedListing.id)
+        : -1
+
+      if (e.key === 'j') {
+        // Move down
+        const nextIndex = currentIndex < rows.length - 1 ? currentIndex + 1 : currentIndex
+        setSelectedListing(rows[nextIndex].original)
+      } else if (e.key === 'k') {
+        // Move up
+        const prevIndex = currentIndex > 0 ? currentIndex - 1 : 0
+        setSelectedListing(rows[prevIndex].original)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyPress)
+    return () => window.removeEventListener('keydown', handleKeyPress)
+  }, [table, selectedListing])
 
   return (
     <div className="main-content">
@@ -118,7 +142,10 @@ export function ListingsTable() {
                   <td
                     key={cell.id}
                     className="table-cell"
-                    style={{ width: cell.column.getSize() }}
+                    style={{ 
+                      width: cell.column.getSize(),
+                      ...(cell.column.columnDef.meta?.getCellStyles?.(cell.getValue()) || {})
+                    }}
                   >
                     {flexRender(
                       cell.column.columnDef.cell,
