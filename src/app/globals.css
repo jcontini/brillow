@@ -212,59 +212,52 @@ body {
     width: 100%;
   }
 
-  /* Mapbox popup styling */
-  .mapboxgl-popup-content {
-    @apply bg-[var(--surface)] border border-[var(--border)] rounded-lg shadow-lg p-3;
+  /* Replace the complex Mapbox popup styling with this simpler version */
+
+  .dark-theme-popup.mapboxgl-popup {
+    max-width: 300px;
+  }
+
+  .dark-theme-popup .mapboxgl-popup-content {
+    background: rgba(20, 20, 20, 0.95);
     color: var(--text-primary);
-    min-width: 200px;
-    backdrop-filter: blur(12px);
+    padding: 1rem;
+    border-radius: 12px;
+    border: 0.5px solid var(--rating-color);
     box-shadow: 
       0 4px 24px -1px rgba(0, 0, 0, 0.3),
-      0 0 0 1px var(--border);
+      0 0 0 0.5px var(--rating-color),
+      0 0 16px rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(12px);
   }
 
-  .mapboxgl-popup-close-button {
-    @apply text-[var(--text-secondary)] hover:text-[var(--text-primary)] px-2;
+  .dark-theme-popup .mapboxgl-popup-tip {
+    border-top-color: var(--rating-color);
+    border-bottom-color: var(--rating-color);
   }
 
+  .dark-theme-popup .mapboxgl-popup-close-button {
+    display: none;
+  }
+
+  .dark-theme-popup .mapboxgl-popup-close-button:hover {
+    display: none;
+  }
+
+  /* Keep these styles for the content */
   .popup-content {
-    @apply min-w-[200px];
+    min-width: 200px;
   }
 
   .popup-address {
-    @apply font-medium mb-1 text-base;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    font-size: 1rem;
     color: var(--text-primary);
   }
 
   .popup-details {
-    @apply text-sm;
-    color: var(--text-secondary);
-  }
-
-  /* Style the popup tip to match the theme */
-  .mapboxgl-popup-tip {
-    border-top-color: var(--surface) !important;
-    border-bottom-color: var(--surface) !important;
-    z-index: 1000;
-  }
-
-  /* Update Mapbox popup styling with more prominent styles and z-index */
-  .mapboxgl-popup {
-    z-index: 1000 !important; /* Ensure popup appears above other elements */
-  }
-
-  /* Make popup content more visible */
-  .popup-content {
-    @apply min-w-[200px];
-  }
-
-  .popup-address {
-    @apply font-medium mb-1 text-base;
-    color: var(--text-primary);
-  }
-
-  .popup-details {
-    @apply text-sm;
+    font-size: 0.875rem;
     color: var(--text-secondary);
   }
 

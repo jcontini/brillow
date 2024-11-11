@@ -16,7 +16,7 @@ const getRatingColor = (rating: number): string => {
     case 3: return '#f59e0b' // Yellow/Orange for 3 stars
     case 2: return '#ef4444' // Red for 2 stars
     case 1: return '#7f1d1d' // Dark red for 1 star
-    default: return '#6b7280' // Gray for no rating
+    default: return 'rgba(255, 255, 255, 0.2)' // Default color for no rating
   }
 }
 
@@ -115,15 +115,18 @@ export function Map({ className = '' }: MapProps) {
           // Create or update popup
           let popup = popupsRef.current[listing.id]
           if (!popup) {
+            const borderColor = getRatingColor(listing.rating || 0)
+            
             popup = new mapboxgl.Popup({
               offset: [0, -38],
-              className: 'listing-popup',
-              closeButton: true,
-              closeOnClick: false,
-              maxWidth: '300px'
+              closeButton: false,
+              closeOnClick: true,
+              maxWidth: '300px',
+              className: `dark-theme-popup rating-${listing.rating || 0}`,
+              anchor: 'bottom'
             })
             .setHTML(`
-              <div class="popup-content">
+              <div class="popup-content" style="--rating-color: ${borderColor}">
                 <div class="popup-address">${listing.address}</div>
                 <div class="popup-details">
                   ${formatPrice(listing.price)} · 
