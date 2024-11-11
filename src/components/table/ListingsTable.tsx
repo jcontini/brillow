@@ -16,6 +16,7 @@ import { useState, useMemo, useEffect } from 'react'
 import { PropertyDetails } from '../PropertyDetails'
 import { StarRating } from '../StarRating'
 import { Map } from '../Map'
+import { Terminal } from '../Terminal'
 
 export function ListingsTable() {
   const listings = useListingsStore((state) => state.listings)
@@ -87,14 +88,11 @@ export function ListingsTable() {
 
   return (
     <div className="main-content flex">
-      <div className="w-[30%]">
-        <Map />
-      </div>
       <div className="w-[70%] flex">
-        <div className="flex-1">
-          <div className="table-container">
+        <div className="flex-1 flex flex-col">
+          <div className="table-container" style={{ maxHeight: '600px' }}>
             <table className="table-base">
-              <thead>
+              <thead className="sticky top-0 z-10 bg-[var(--surface-glass)]">
                 {table.getHeaderGroups().map(headerGroup => (
                   <tr key={headerGroup.id} className="table-header-row">
                     {headerGroup.headers.map(header => (
@@ -174,12 +172,16 @@ export function ListingsTable() {
               </tbody>
             </table>
           </div>
+          <Terminal />
         </div>
         {selectedListing && (
           <div className="flex-shrink-0">
             <PropertyDetails listing={selectedListing} />
           </div>
         )}
+      </div>
+      <div className="w-[30%]">
+        <Map />
       </div>
     </div>
   )

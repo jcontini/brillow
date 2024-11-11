@@ -32,25 +32,39 @@ export const PropertyDetails = ({ listing }: PropertyDetailsProps) => {
   }, [listing])
 
   const handleGeocode = async () => {
-    if (!listing.address) return
+    if (!listing.address) {
+      console.log('No address provided')
+      return
+    }
+    
+    console.log('Attempting to geocode address:', listing.address)
     
     try {
-      const response = await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(listing.address)}.json?` + 
+      const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(listing.address)}.json?` + 
         new URLSearchParams({
           access_token: process.env.NEXT_PUBLIC_MAPBOX_TOKEN || '',
           limit: '1',
           types: 'address'
         })
-      )
       
-      if (!response.ok) throw new Error('Geocoding failed')
+      console.log('Geocoding URL:', url)
+      
+      const response = await fetch(url)
+      
+      if (!response.ok) {
+        console.error('Geocoding response not OK:', response.status, response.statusText)
+        throw new Error('Geocoding failed')
+      }
       
       const data = await response.json()
+      console.log('Geocoding response:', data)
+      
       if (data.features && data.features.length > 0) {
         const [lng, lat] = data.features[0].geometry.coordinates
+        console.log('Found coordinates:', { lng, lat })
         updateListing(listing.id!, { coordinates: { lng, lat } })
       } else {
+        console.log('No geocoding results found')
         throw new Error('No results found')
       }
     } catch (error) {
