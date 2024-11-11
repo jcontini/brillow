@@ -46,10 +46,14 @@ body {
 
   /* Header Styles */
   .table-header {
-    @apply px-3 py-2 font-medium relative text-left border-r last:border-r-0 whitespace-nowrap;
+    @apply px-3 py-2 font-medium relative text-left border-r last:border-r-0 whitespace-nowrap cursor-pointer;
     background: var(--header-bg);
     border-color: var(--border);
     color: var(--text-primary);
+  }
+
+  .table-header:hover {
+    background: var(--surface);
   }
 
   /* Header Row */

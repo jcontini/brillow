@@ -3,9 +3,12 @@
 import {
   useReactTable,
   getCoreRowModel,
+  getSortedRowModel,
+  SortingState,
   flexRender,
   ColumnDef,
 } from '@tanstack/react-table'
+import { FiChevronUp, FiChevronDown } from 'react-icons/fi'
 import { HouseListing } from '@/types'
 import { useListingsStore } from '@/stores/listingsStore'
 import { columns } from './columns'
@@ -20,7 +23,11 @@ export function ListingsTable() {
   
   const [columnSizing, setColumnSizing] = useState({})
   const [selectedListing, setSelectedListing] = useState<HouseListing | null>(null)
-  
+  const [sorting, setSorting] = useState<SortingState>([
+    { id: 'rating', desc: true },  // Primary sort: rating descending
+    { id: 'price', desc: false }   // Secondary sort: price ascending
+  ])
+
   const table = useReactTable<HouseListing>({
     data,
     columns: columns.map(col => {
@@ -43,16 +50,13 @@ export function ListingsTable() {
       return col
     }),
     getCoreRowModel: getCoreRowModel(),
-    defaultColumn: {
-      minSize: 50,
-      maxSize: 500,
-      size: 150,
-    },
-    enableColumnResizing: true,
-    columnResizeMode: 'onChange',
+    getSortedRowModel: getSortedRowModel(),
+    enableSorting: true,
     state: {
+      sorting,
       columnSizing,
     },
+    onSortingChange: setSorting,
     onColumnSizingChange: setColumnSizing,
   })
 
@@ -68,11 +72,23 @@ export function ListingsTable() {
                     key={header.id}
                     className="table-header"
                     style={{ width: header.getSize() }}
+                    onClick={header.column.getToggleSortingHandler()}
                   >
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
+                    <div className="flex items-center gap-2">
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                      {header.column.getIsSorted() && (
+                        <span className="text-accent-blue">
+                          {header.column.getIsSorted() === 'asc' ? (
+                            <FiChevronUp className="w-4 h-4" />
+                          ) : (
+                            <FiChevronDown className="w-4 h-4" />
+                          )}
+                        </span>
+                      )}
+                    </div>
                     {header.column.getCanResize() && (
                       <div
                         onMouseDown={header.getResizeHandler()}
@@ -82,6 +98,7 @@ export function ListingsTable() {
                             ? 'resize-handle-active' 
                             : 'resize-handle-inactive'
                         }`}
+                        onClick={e => e.stopPropagation()}
                       />
                     )}
                   </th>

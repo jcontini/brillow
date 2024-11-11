@@ -17,6 +17,14 @@ const getLinkIcon = (url: string) => {
   return <FiExternalLink className="w-4 h-4" />
 }
 
+const formatDate = (dateStr: string) => {
+  try {
+    return format(new Date(dateStr), 'MMM d')
+  } catch {
+    return ''
+  }
+}
+
 export const columns = [
   columnHelper.accessor("address", {
     header: "Address",
@@ -75,24 +83,12 @@ export const columns = [
   }),
   columnHelper.accessor("availability", {
     header: "Available",
-    cell: info => {
-      const date = info.getValue()
-      try {
-        return format(new Date(date), 'MMM d, yyyy')
-      } catch {
-        return ''
-      }
-    }
+    cell: info => formatDate(info.getValue()),
+    sortingFn: 'datetime'
   }),
   columnHelper.accessor("dateAdded", {
     header: "Added",
-    cell: info => {
-      const date = info.getValue()
-      try {
-        return format(new Date(date), 'MMM d, yyyy')
-      } catch {
-        return ''
-      }
-    }
+    cell: info => formatDate(info.getValue()),
+    sortingFn: 'datetime'
   })
 ]
