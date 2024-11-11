@@ -96,7 +96,7 @@ export const columns = [
     header: "Rating",
     cell: info => (
       <StarRating 
-        rating={info.getValue()}
+        rating={info.getValue() || 0}
         onChange={undefined}
         colorMode="gradient"
       />

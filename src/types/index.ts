@@ -2,20 +2,18 @@ import { CellContext, RowData } from '@tanstack/react-table'
 
 // Listing Types
 export interface HouseListing {
-  id?: string
-  rating: number
-  link: string
-  neighborhood: string
+  id: string
   address: string
+  price: number
   bedrooms: number
   bathrooms: number
-  price: number
   squareFeet: number
-  unit: string
   availability: string
-  notes: string
   dateAdded: string
-  coordinates?: Coordinates | null
+  link: string
+  coordinates?: Coordinates
+  rating?: number
+  notes?: string
 }
 
 export interface Coordinates {
@@ -26,8 +24,10 @@ export interface Coordinates {
 // Store Types
 export interface ListingsState {
   listings: HouseListing[]
-  importListings: (newListings: HouseListing[]) => void
-  appendListings: (newListings: HouseListing[]) => void
+  selectedListingId: string | null
+  importListings: (listings: HouseListing[]) => void
+  appendListings: (listings: HouseListing[]) => void
+  setSelectedListing: (id: string | null) => void
   addListing: (listing: HouseListing) => void
   removeListing: (id: string) => void
   updateListing: (id: string, updates: Partial<HouseListing>) => void

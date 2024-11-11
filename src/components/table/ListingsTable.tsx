@@ -18,11 +18,12 @@ import { Map } from '../Map'
 
 export function ListingsTable() {
   const listings = useListingsStore((state) => state.listings)
+  const selectedListingId = useListingsStore((state) => state.selectedListingId)
+  const setSelectedListing = useListingsStore((state) => state.setSelectedListing)
   const updateListing = useListingsStore((state) => state.updateListing)
   const data = useMemo(() => listings, [listings])
   
   const [columnSizing, setColumnSizing] = useState({})
-  const [selectedListing, setSelectedListing] = useState<HouseListing | null>(null)
   const [sorting, setSorting] = useState<SortingState>([
     { id: 'rating', desc: true },  // Primary sort: rating descending
     { id: 'price', desc: false }   // Secondary sort: price ascending
@@ -65,29 +66,34 @@ export function ListingsTable() {
       const rows = table.getRowModel().rows
       if (!rows.length) return
       
-      const currentIndex = selectedListing 
-        ? rows.findIndex(row => row.original.id === selectedListing.id)
+      const currentIndex = selectedListingId 
+        ? rows.findIndex(row => row.original.id === selectedListingId)
         : -1
 
       if (e.key === 'j') {
         // Move down
         const nextIndex = currentIndex < rows.length - 1 ? currentIndex + 1 : currentIndex
-        setSelectedListing(rows[nextIndex].original)
+        setSelectedListing(rows[nextIndex].original.id)
       } else if (e.key === 'k') {
         // Move up
         const prevIndex = currentIndex > 0 ? currentIndex - 1 : 0
-        setSelectedListing(rows[prevIndex].original)
+        setSelectedListing(rows[prevIndex].original.id)
       }
     }
 
     window.addEventListener('keydown', handleKeyPress)
     return () => window.removeEventListener('keydown', handleKeyPress)
-  }, [table, selectedListing])
+  }, [table, selectedListingId, setSelectedListing])
+
+  // Update row click handler
+  const handleRowClick = (listing: HouseListing) => {
+    setSelectedListing(listing.id === selectedListingId ? null : listing.id)
+  }
 
   return (
     <div className="content-wrapper">
       <div className="table-section">
-        <div className="glass-card table-container">
+        <div className="glass-card">
           <table className="table-base">
             <thead className="sticky top-0 z-10 bg-[var(--surface-glass)]">
               {table.getHeaderGroups().map(headerGroup => (
@@ -135,8 +141,8 @@ export function ListingsTable() {
               {table.getRowModel().rows.map(row => (
                 <tr 
                   key={row.id}
-                  onClick={() => setSelectedListing(row.original)}
-                  className={selectedListing?.id === row.original.id ? 'selected' : ''}
+                  onClick={() => handleRowClick(row.original)}
+                  className={row.original.id === selectedListingId ? 'selected' : ''}
                   style={{ cursor: 'pointer' }}
                 >
                   {row.getVisibleCells().map(cell => (
@@ -169,16 +175,16 @@ export function ListingsTable() {
             </tbody>
           </table>
         </div>
-        {selectedListing && (
-          <div className="flex-shrink-0">
-            <PropertyDetails listing={selectedListing} />
-          </div>
-        )}
       </div>
-      <div className="map-section">
-        <div className="glass-card">
+      <div className="sidebar-section">
+        <div className="map-container glass-card mb-4">
           <Map />
         </div>
+        {selectedListingId && (
+          <PropertyDetails 
+            listing={listings.find(l => l.id === selectedListingId)!} 
+          />
+        )}
       </div>
     </div>
   )

@@ -46,19 +46,74 @@ body {
 
   /* Layout */
   .content-wrapper {
-    display: flex;
-    gap: 8px;
+    @apply flex gap-4;
   }
 
   .table-section {
-    width: 70%;
+    @apply w-[65%];
   }
 
-  .map-section {
-    width: 30%;
-    height: 50vh;
+  .sidebar-section {
+    @apply w-[35%] space-y-4;
     position: sticky;
     top: 8px;
+    height: fit-content;
+  }
+
+  /* Map Container */
+  .map-container {
+    @apply h-[400px] w-full;
+  }
+
+  /* Property Details Panel */
+  .property-details-panel {
+    @apply p-6 w-full;
+    background: var(--surface-glass);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+
+  .details-grid {
+    @apply grid gap-4 mt-4;
+  }
+
+  .detail-item {
+    @apply space-y-1;
+  }
+
+  .detail-item label {
+    @apply block text-sm text-gray-400;
+  }
+
+  .edit-input {
+    @apply w-full px-3 py-2 rounded-lg;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+  }
+
+  .edit-input:focus {
+    @apply outline-none;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 1px var(--accent-blue);
+  }
+
+  .detail-item.notes {
+    @apply col-span-full;
+  }
+
+  textarea.edit-input {
+    @apply resize-none;
+  }
+
+  .table-link {
+    @apply inline-flex items-center transition-colors;
+    color: var(--accent-blue);
+  }
+
+  .table-link:hover {
+    color: rgb(96, 165, 250);
   }
 
   /* Table Styles */
@@ -111,24 +166,6 @@ body {
     background: var(--surface);
   }
 
-  /* Map Container */
-  .map-container {
-    height: 100%;
-    width: 100%;
-    border-radius: 12px;
-    overflow: hidden;
-  }
-
-  /* Property Details Panel */
-  .property-details-panel {
-    @apply w-[400px] p-6;
-    background: var(--surface-glass);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    margin: 8px 8px 8px 0;
-  }
-
   /* Button Styles */
   .button {
     @apply flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200;
@@ -173,5 +210,66 @@ body {
   .mapboxgl-map {
     height: 100%;
     width: 100%;
+  }
+
+  /* Mapbox popup styling */
+  .mapboxgl-popup-content {
+    @apply bg-[var(--surface)] border border-[var(--border)] rounded-lg shadow-lg p-3;
+    color: var(--text-primary);
+    min-width: 200px;
+    backdrop-filter: blur(12px);
+    box-shadow: 
+      0 4px 24px -1px rgba(0, 0, 0, 0.3),
+      0 0 0 1px var(--border);
+  }
+
+  .mapboxgl-popup-close-button {
+    @apply text-[var(--text-secondary)] hover:text-[var(--text-primary)] px-2;
+  }
+
+  .popup-content {
+    @apply min-w-[200px];
+  }
+
+  .popup-address {
+    @apply font-medium mb-1 text-base;
+    color: var(--text-primary);
+  }
+
+  .popup-details {
+    @apply text-sm;
+    color: var(--text-secondary);
+  }
+
+  /* Style the popup tip to match the theme */
+  .mapboxgl-popup-tip {
+    border-top-color: var(--surface) !important;
+    border-bottom-color: var(--surface) !important;
+    z-index: 1000;
+  }
+
+  /* Update Mapbox popup styling with more prominent styles and z-index */
+  .mapboxgl-popup {
+    z-index: 1000 !important; /* Ensure popup appears above other elements */
+  }
+
+  /* Make popup content more visible */
+  .popup-content {
+    @apply min-w-[200px];
+  }
+
+  .popup-address {
+    @apply font-medium mb-1 text-base;
+    color: var(--text-primary);
+  }
+
+  .popup-details {
+    @apply text-sm;
+    color: var(--text-secondary);
+  }
+
+  /* Debug styles to help spot popup container */
+  .listing-popup {
+    outline: 2px solid red; /* Temporary debug outline */
   }
 }

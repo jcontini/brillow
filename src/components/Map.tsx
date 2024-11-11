@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { useListingsStore } from '@/stores/listingsStore'
+import { useTerminalStore } from '@/stores/terminalStore'
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || ''
 
@@ -19,6 +20,16 @@ const getRatingColor = (rating: number): string => {
   }
 }
 
+// Helper function to format price
+const formatPrice = (price: number) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(price)
+}
+
 interface MapProps {
   className?: string
 }
@@ -26,59 +37,127 @@ interface MapProps {
 export function Map({ className = '' }: MapProps) {
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<mapboxgl.Map | null>(null)
-  const markers = useRef<mapboxgl.Marker[]>([])
+  const markersRef = useRef<{ [key: string]: mapboxgl.Marker }>({})
+  const popupsRef = useRef<{ [key: string]: mapboxgl.Popup }>({})
+  
   const listings = useListingsStore(state => state.listings)
+  const selectedListingId = useListingsStore(state => state.selectedListingId)
+  const setSelectedListing = useListingsStore(state => state.setSelectedListing)
+  const addLog = useTerminalStore(state => state.addLog)
 
+  // Initialize map
   useEffect(() => {
     if (!mapContainer.current) return
 
-    console.log('Initializing map')
+    addLog('Initializing map...', 'info')
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/dark-v11',
-      center: [-97.7431, 30.2672], // Austin coordinates
-      zoom: 11
+      center: [-97.7431, 30.2672],
+      zoom: 11,
+      collectResourceTiming: false
     })
 
     return () => {
+      // Clean up all markers and popups
+      Object.values(markersRef.current).forEach(marker => marker.remove())
+      Object.values(popupsRef.current).forEach(popup => popup.remove())
       map.current?.remove()
     }
-  }, [])
+  }, [addLog])
 
-  // Update markers when listings change
+  // Handle markers and popups
   useEffect(() => {
     if (!map.current) return
 
-    console.log('Updating markers for listings:', listings)
+    addLog('Updating markers...', 'info')
 
-    // Clear existing markers
-    markers.current.forEach(marker => marker.remove())
-    markers.current = []
-
-    // Add new markers
-    listings.forEach(listing => {
-      if (listing.coordinates) {
-        // Create popup
-        const popup = new mapboxgl.Popup({ offset: 25 })
-          .setHTML(`
-            <strong>${listing.address}</strong><br>
-            $${listing.price}/mo<br>
-            ${listing.bedrooms} beds, ${listing.bathrooms} baths
-          `)
-
-        // Create marker with rating-based color
-        const marker = new mapboxgl.Marker({
-          color: getRatingColor(listing.rating || 0),
-          scale: 0.8
-        })
-          .setLngLat([listing.coordinates.lng, listing.coordinates.lat])
-          .setPopup(popup)
-          .addTo(map.current!)
-
-        markers.current.push(marker)
+    // Track which listings still exist
+    const currentListingIds = new Set(listings.map(l => l.id))
+    
+    // Remove markers and popups for listings that no longer exist
+    Object.entries(markersRef.current).forEach(([id, marker]) => {
+      if (!currentListingIds.has(id)) {
+        marker.remove()
+        delete markersRef.current[id]
+        if (popupsRef.current[id]) {
+          popupsRef.current[id].remove()
+          delete popupsRef.current[id]
+        }
       }
     })
-  }, [listings])
+
+    // Update or create markers for current listings
+    listings.forEach(listing => {
+      if (listing.coordinates) {
+        try {
+          const isSelected = listing.id === selectedListingId
+          
+          // Create or update marker
+          let marker = markersRef.current[listing.id]
+          if (!marker) {
+            marker = new mapboxgl.Marker({
+              color: getRatingColor(listing.rating || 0),
+              scale: isSelected ? 1.2 : 0.8,
+              anchor: 'bottom'
+            })
+            .setLngLat([listing.coordinates.lng, listing.coordinates.lat])
+            .addTo(map.current!)
+
+            // Add click handler
+            marker.getElement().addEventListener('click', () => {
+              setSelectedListing(listing.id === selectedListingId ? null : listing.id)
+            })
+
+            markersRef.current[listing.id] = marker
+          } else {
+            // Update existing marker
+            marker.setLngLat([listing.coordinates.lng, listing.coordinates.lat])
+            marker.getElement().style.transform = `scale(${isSelected ? 1.2 : 0.8})`
+          }
+
+          // Create or update popup
+          let popup = popupsRef.current[listing.id]
+          if (!popup) {
+            const popupContent = document.createElement('div')
+            popupContent.className = 'popup-content'
+            popupContent.innerHTML = `
+              <div class="popup-address">${listing.address}</div>
+              <div class="popup-details">
+                ${formatPrice(listing.price)} · 
+                ${listing.bedrooms} bed${listing.bedrooms !== 1 ? 's' : ''} · 
+                ${listing.bathrooms} bath${listing.bathrooms !== 1 ? 's' : ''}
+              </div>
+            `
+
+            popup = new mapboxgl.Popup({
+              offset: [0, -38],
+              className: 'listing-popup',
+              closeButton: true,
+              closeOnClick: false,
+              maxWidth: '300px'
+            })
+            .setDOMContent(popupContent)
+
+            popupsRef.current[listing.id] = popup
+          }
+
+          // Show/hide popup based on selection
+          if (isSelected) {
+            marker.setPopup(popup)
+            if (!popup.isOpen()) {
+              popup.addTo(map.current!)
+            }
+          } else {
+            popup.remove()
+          }
+
+        } catch (error) {
+          addLog(`Error handling marker/popup for ${listing.address}: ${error}`, 'error')
+        }
+      }
+    })
+  }, [listings, selectedListingId, setSelectedListing, addLog])
 
   return (
     <div className="map-container">

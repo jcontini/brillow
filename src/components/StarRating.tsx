@@ -4,13 +4,13 @@ import { useState } from 'react'
 import { FaStar } from 'react-icons/fa'
 
 interface StarRatingProps {
-  rating: number
+  rating?: number
   onChange?: (rating: number) => void
   colorMode?: 'gradient'
 }
 
-const getStarColor = (starPosition: number, rating: number) => {
-  if (starPosition > rating) return 'rgba(255, 255, 255, 0.2)' // Unfilled stars
+const getStarColor = (starPosition: number, rating: number | undefined) => {
+  if (!rating || starPosition > rating) return 'rgba(255, 255, 255, 0.2)' // Unfilled stars
   
   // Color gradient from red (1) to green (5)
   const colors = {
@@ -24,14 +24,14 @@ const getStarColor = (starPosition: number, rating: number) => {
   return colors[rating as keyof typeof colors] || colors[3]
 }
 
-export function StarRating({ rating, onChange, colorMode }: StarRatingProps) {
+export function StarRating({ rating = 0, onChange, colorMode }: StarRatingProps) {
   return (
     <div className="star-rating">
       {[1, 2, 3, 4, 5].map((star) => (
         <button
           key={star}
           onClick={() => onChange?.(star)}
-          className={`star-button ${star <= rating ? 'filled' : ''} ${!onChange ? 'readonly' : ''}`}
+          className={`star-button ${star <= (rating || 0) ? 'filled' : ''} ${!onChange ? 'readonly' : ''}`}
           style={colorMode === 'gradient' ? {
             color: getStarColor(star, rating)
           } : undefined}
