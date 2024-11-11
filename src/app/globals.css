@@ -277,4 +277,40 @@ body {
   .edit-input[type="number"] {
     -moz-appearance: textfield; /* Firefox */
   }
+
+  .modal-backdrop {
+    @apply fixed inset-0 flex items-center justify-center z-50;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-content {
+    @apply p-6 rounded-xl max-w-md w-full;
+    background: var(--surface-glass);
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2);
+  }
+
+  .modal-title {
+    @apply text-xl font-medium mb-4;
+    color: var(--text-primary);
+  }
+
+  .modal-description {
+    @apply mb-6;
+    color: var(--text-secondary);
+  }
+
+  .modal-buttons {
+    @apply flex flex-col gap-2;
+  }
+
+  .action-button.secondary {
+    @apply opacity-75;
+  }
+
+  .action-button.secondary:hover {
+    @apply opacity-100;
+    border-color: var(--border);
+  }
 }

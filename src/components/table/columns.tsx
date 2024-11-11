@@ -3,7 +3,8 @@ import { HouseListing } from "@/types"
 import { StarRating } from "../StarRating"
 import { format } from "date-fns"
 import { SiZillow, SiTrulia } from "react-icons/si"
-import { FaFacebookSquare } from "react-icons/fa"
+import { FaFacebookSquare, FaShower } from "react-icons/fa"
+import { IoBedOutline } from "react-icons/io5"
 import { FiExternalLink } from "react-icons/fi"
 import { RealtorIcon } from '../icons/RealtorIcon'
 
@@ -59,11 +60,21 @@ export const columns = [
   }),
   columnHelper.accessor("bedrooms", {
     header: "Beds",
-    cell: info => info.getValue()
+    cell: info => (
+      <div className="flex items-center gap-1">
+        <IoBedOutline className="w-4 h-4 opacity-75" />
+        <span>{info.getValue()}</span>
+      </div>
+    )
   }),
   columnHelper.accessor("bathrooms", {
     header: "Baths",
-    cell: info => info.getValue()
+    cell: info => (
+      <div className="flex items-center gap-1">
+        <FaShower className="w-3.5 h-3.5 opacity-75" />
+        <span>{info.getValue()}</span>
+      </div>
+    )
   }),
   columnHelper.accessor("price", {
     header: "Price",
