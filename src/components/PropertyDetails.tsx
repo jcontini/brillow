@@ -1,12 +1,13 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { HouseListing } from "@/types"
 import { StarRating } from "./StarRating"
 import { useListingsStore } from "@/stores/listingsStore"
 import { format } from "date-fns"
 import { SiZillow, SiTrulia } from "react-icons/si"
 import { FaFacebookSquare } from "react-icons/fa"
-import { FiExternalLink } from "react-icons/fi"
+import { FiExternalLink, FiMapPin } from "react-icons/fi"
 
 interface PropertyDetailsProps {
   listing: HouseListing | null
@@ -22,13 +23,48 @@ const getLinkIcon = (url: string) => {
 
 export const PropertyDetails = ({ listing }: PropertyDetailsProps) => {
   const updateListing = useListingsStore(state => state.updateListing)
+  const [localValues, setLocalValues] = useState<Partial<HouseListing>>({})
   
   if (!listing) return null
 
-  const handleChange = (field: keyof HouseListing, value: any) => {
-    if (listing.id) {
-      updateListing(listing.id, { [field]: value })
+  useEffect(() => {
+    setLocalValues(listing)
+  }, [listing])
+
+  const handleGeocode = async () => {
+    if (!listing.address) return
+    
+    try {
+      const response = await fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(listing.address)}.json?` + 
+        new URLSearchParams({
+          access_token: process.env.NEXT_PUBLIC_MAPBOX_TOKEN || '',
+          limit: '1',
+          types: 'address'
+        })
+      )
+      
+      if (!response.ok) throw new Error('Geocoding failed')
+      
+      const data = await response.json()
+      if (data.features && data.features.length > 0) {
+        const [lng, lat] = data.features[0].geometry.coordinates
+        updateListing(listing.id!, { coordinates: { lng, lat } })
+      } else {
+        throw new Error('No results found')
+      }
+    } catch (error) {
+      console.error('Geocoding error:', error)
+      updateListing(listing.id!, { coordinates: null })
     }
+  }
+
+  const handleChange = (field: keyof HouseListing, value: any) => {
+    setLocalValues(prev => ({
+      ...prev,
+      [field]: value
+    }))
+    updateListing(listing.id!, { [field]: value })
   }
 
   return (
@@ -39,7 +75,7 @@ export const PropertyDetails = ({ listing }: PropertyDetailsProps) => {
         <div className="detail-item">
           <label>Rating</label>
           <StarRating 
-            rating={listing.rating}
+            rating={localValues.rating ?? listing.rating}
             onChange={(newRating) => handleChange('rating', newRating)}
           />
         </div>
@@ -48,7 +84,7 @@ export const PropertyDetails = ({ listing }: PropertyDetailsProps) => {
           <label>Address</label>
           <input
             type="text"
-            value={listing.address}
+            value={localValues.address ?? listing.address}
             onChange={e => handleChange('address', e.target.value)}
             className="edit-input"
           />
@@ -69,7 +105,7 @@ export const PropertyDetails = ({ listing }: PropertyDetailsProps) => {
           <label>Neighborhood</label>
           <input
             type="text"
-            value={listing.neighborhood}
+            value={localValues.neighborhood ?? listing.neighborhood}
             onChange={e => handleChange('neighborhood', e.target.value)}
             className="edit-input"
           />
@@ -79,7 +115,7 @@ export const PropertyDetails = ({ listing }: PropertyDetailsProps) => {
           <label>Price</label>
           <input
             type="number"
-            value={listing.price}
+            value={localValues.price ?? listing.price}
             onChange={e => handleChange('price', Number(e.target.value))}
             className="edit-input"
           />
@@ -89,7 +125,7 @@ export const PropertyDetails = ({ listing }: PropertyDetailsProps) => {
           <label>Size</label>
           <input
             type="number"
-            value={listing.squareFeet}
+            value={localValues.squareFeet ?? listing.squareFeet}
             onChange={e => handleChange('squareFeet', Number(e.target.value))}
             className="edit-input"
           />
@@ -100,14 +136,14 @@ export const PropertyDetails = ({ listing }: PropertyDetailsProps) => {
           <div className="flex gap-2">
             <input
               type="number"
-              value={listing.bedrooms}
+              value={localValues.bedrooms ?? listing.bedrooms}
               onChange={e => handleChange('bedrooms', Number(e.target.value))}
               className="edit-input w-20"
             />
             <span className="self-center">/</span>
             <input
               type="number"
-              value={listing.bathrooms}
+              value={localValues.bathrooms ?? listing.bathrooms}
               onChange={e => handleChange('bathrooms', Number(e.target.value))}
               className="edit-input w-20"
             />
@@ -118,7 +154,7 @@ export const PropertyDetails = ({ listing }: PropertyDetailsProps) => {
           <label>Available</label>
           <input
             type="date"
-            value={listing.availability.split('T')[0]}
+            value={localValues.availability?.split('T')[0] ?? listing.availability.split('T')[0]}
             onChange={e => handleChange('availability', e.target.value)}
             className="edit-input"
           />
@@ -127,10 +163,33 @@ export const PropertyDetails = ({ listing }: PropertyDetailsProps) => {
         <div className="detail-item notes">
           <label>Notes</label>
           <textarea
-            value={listing.notes}
+            value={localValues.notes ?? listing.notes}
             onChange={e => handleChange('notes', e.target.value)}
             className="edit-input min-h-[100px]"
           />
+        </div>
+
+        <div className="detail-item">
+          <label>Coordinates</label>
+          {listing.coordinates === undefined ? (
+            <div className="flex items-center gap-2">
+              <span className="text-gray-500 text-sm">Not geocoded</span>
+              <button
+                onClick={handleGeocode}
+                className="flex items-center gap-1 px-2 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                <FiMapPin className="w-3 h-3" />
+                <span>Geocode</span>
+              </button>
+            </div>
+          ) : listing.coordinates === null ? (
+            <span className="text-red-500 text-sm">Geocoding failed</span>
+          ) : (
+            <div className="text-sm space-y-1">
+              <div>Lat: {listing.coordinates.lat.toFixed(6)}</div>
+              <div>Lng: {listing.coordinates.lng.toFixed(6)}</div>
+            </div>
+          )}
         </div>
       </div>
     </div>
