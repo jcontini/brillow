@@ -5,6 +5,9 @@ import { formatPrice, formatDate } from '../../utils/format'
 import { SiZillow, SiTrulia } from "react-icons/si"
 import { FaFacebookSquare } from "react-icons/fa"
 import { FiExternalLink } from "react-icons/fi"
+import { IoBedOutline } from "react-icons/io5"
+import { LuBath } from "react-icons/lu"
+import { AiOutlineExpand } from "react-icons/ai"
 
 const getLinkIcon = (url: string) => {
   if (url.includes('zillow.com')) return <SiZillow className="w-4 h-4" />
@@ -30,14 +33,15 @@ export const columns: ColumnDef<HouseListing>[] = [
           </div>
           <div className="table-cell-details">
             <div className="table-cell-detail-item">
-              {listing.bedrooms} beds
+              <IoBedOutline className="w-3.5 h-3.5" />
+              {listing.bedrooms}
             </div>
-            <span className="detail-separator">•</span>
             <div className="table-cell-detail-item">
-              {listing.bathrooms} baths
+              <LuBath className="w-3.5 h-3.5" />
+              {listing.bathrooms}
             </div>
-            <span className="detail-separator">•</span>
             <div className="table-cell-detail-item">
+              <AiOutlineExpand className="w-3.5 h-3.5" />
               {listing.squareFeet.toLocaleString()} ft²
             </div>
           </div>
@@ -66,7 +70,7 @@ export const columns: ColumnDef<HouseListing>[] = [
   },
   {
     id: 'rating',
-    header: 'Rating',
+    header: 'Interior',
     accessorKey: 'rating',
     cell: info => (
       <div className="table-cell-content">

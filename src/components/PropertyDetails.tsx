@@ -86,7 +86,7 @@ export const PropertyDetails = ({ listing }: PropertyDetailsProps) => {
       
       <div className="details-grid">
         <div className="detail-item">
-          <label>Rating</label>
+          <label>Interior</label>
           <StarRating 
             rating={localValues.rating ?? listing.rating}
             onChange={(newRating) => handleChange('rating', newRating)}

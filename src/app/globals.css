@@ -104,9 +104,9 @@ body {
   }
 
   .edit-input {
-    @apply w-full px-3 py-2 rounded-lg;
+    @apply w-full px-2 py-1 rounded-lg;
     background: var(--surface);
-    border: 1px solid var(--border);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     color: var(--text-primary);
   }
 
