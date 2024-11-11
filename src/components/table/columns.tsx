@@ -1,5 +1,4 @@
 import { createColumnHelper, ColumnDef } from "@tanstack/react-table"
-import type { ColumnMeta as BaseColumnMeta } from "@tanstack/react-table"
 import { HouseListing } from "@/types"
 import { StarRating } from "../StarRating"
 import { format } from "date-fns"

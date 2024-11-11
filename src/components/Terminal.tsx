@@ -1,76 +1,86 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { useTerminalStore } from '@/stores/terminalStore'
+import type { LogType } from '@/types'
 
-export const Terminal = () => {
-  const { logs, clearLogs } = useTerminalStore()
-  const [height, setHeight] = useState(200)
-  const isDragging = useRef(false)
-  const startY = useRef(0)
-  const startHeight = useRef(0)
+export function Terminal() {
+  const [isOpen, setIsOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const messages = useTerminalStore((state) => state.messages)
+  const clearTerminal = useTerminalStore((state) => state.clear)
 
-  const handleMouseDown = (e: React.MouseDown) => {
-    isDragging.current = true
-    startY.current = e.clientY
-    startHeight.current = height
-    document.addEventListener('mousemove', handleMouseMove)
-    document.addEventListener('mouseup', handleMouseUp)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsOpen(prev => !prev)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
+  useEffect(() => {
+    setMounted(true)
+    return () => setMounted(false)
+  }, [])
+
+  if (!mounted) return null
+
+  const getMessageClass = (type: LogType) => {
+    switch (type) {
+      case 'error':
+        return 'text-red-500'
+      case 'success':
+        return 'text-green-500'
+      case 'info':
+      default:
+        return 'text-[var(--text-secondary)]'
+    }
   }
 
-  const handleMouseMove = (e: MouseEvent) => {
-    if (!isDragging.current) return
-    const delta = startY.current - e.clientY
-    const newHeight = Math.max(100, Math.min(800, startHeight.current + delta))
-    setHeight(newHeight)
-  }
-
-  const handleMouseUp = () => {
-    isDragging.current = false
-    document.removeEventListener('mousemove', handleMouseMove)
-    document.removeEventListener('mouseup', handleMouseUp)
-  }
-
-  return (
-    <div 
-      className="terminal-container"
-      style={{ height: height }}
+  return createPortal(
+    <div
+      className={`fixed inset-x-0 bottom-0 z-50 transition-transform duration-300 ease-in-out ${
+        isOpen ? 'translate-y-0' : 'translate-y-full'
+      }`}
     >
-      <div className="terminal-header">
-        <span className="font-mono text-sm opacity-70">Debug Terminal</span>
-        <div className="flex items-center gap-2">
-          <button 
-            onClick={() => clearLogs()}
-            className="text-xs opacity-50 hover:opacity-100"
-          >
-            Clear
-          </button>
-          <div 
-            className="terminal-drag-handle"
-            onMouseDown={handleMouseDown}
-          />
+      <div className="bg-[var(--surface-glass)] border-t border-[var(--border-color)] backdrop-blur-md">
+        <div className="container mx-auto p-2">
+          <div className="flex justify-between items-center mb-2">
+            <div className="text-sm text-[var(--text-secondary)]">Debug Terminal</div>
+            <div className="flex gap-2">
+              <button
+                onClick={clearTerminal}
+                className="px-2 py-1 text-xs hover:bg-[var(--surface-hover)] rounded"
+              >
+                Clear
+              </button>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="px-2 py-1 text-xs hover:bg-[var(--surface-hover)] rounded"
+              >
+                Close (Esc)
+              </button>
+            </div>
+          </div>
+          <div className="bg-[var(--surface)] rounded overflow-auto h-[200px]">
+            <div className="p-2 font-mono text-sm">
+              {messages.map((message, i) => (
+                <div 
+                  key={i} 
+                  className={`whitespace-pre-wrap ${getMessageClass(message.type)}`}
+                >
+                  {message.text}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
-      <div 
-        className="terminal-content"
-        style={{ height: `calc(${height}px - 37px)` }}
-      >
-        {logs.length === 0 ? (
-          <div className="text-sm opacity-50 italic">No logs yet...</div>
-        ) : (
-          logs.map(log => (
-            <div 
-              key={log.id}
-              className={`terminal-entry ${log.type}`}
-            >
-              <span className="timestamp">
-                {log.timestamp.toLocaleTimeString()}
-              </span>
-              <span className="message">{log.message}</span>
-            </div>
-          ))
-        )}
-      </div>
-    </div>
+    </div>,
+    document.body
   )
 } 

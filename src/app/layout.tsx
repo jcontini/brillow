@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { Terminal } from '@/components/Terminal'
 
 export const metadata: Metadata = {
   title: 'Brillow',
@@ -13,7 +14,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        <Terminal />
+      </body>
     </html>
   )
 }

@@ -7,6 +7,18 @@ import { useListingsStore } from '@/stores/listingsStore'
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || ''
 
+// Rating to color mapping function
+const getRatingColor = (rating: number): string => {
+  switch (rating) {
+    case 5: return '#22c55e' // Green for 5 stars
+    case 4: return '#3b82f6' // Blue for 4 stars
+    case 3: return '#f59e0b' // Yellow/Orange for 3 stars
+    case 2: return '#ef4444' // Red for 2 stars
+    case 1: return '#7f1d1d' // Dark red for 1 star
+    default: return '#6b7280' // Gray for no rating
+  }
+}
+
 interface MapProps {
   className?: string
 }
@@ -46,10 +58,23 @@ export function Map({ className = '' }: MapProps) {
     // Add new markers
     listings.forEach(listing => {
       if (listing.coordinates) {
-        console.log('Adding marker for listing:', listing.address, listing.coordinates)
-        const marker = new mapboxgl.Marker()
+        // Create popup
+        const popup = new mapboxgl.Popup({ offset: 25 })
+          .setHTML(`
+            <strong>${listing.address}</strong><br>
+            $${listing.price}/mo<br>
+            ${listing.bedrooms} beds, ${listing.bathrooms} baths
+          `)
+
+        // Create marker with rating-based color
+        const marker = new mapboxgl.Marker({
+          color: getRatingColor(listing.rating || 0),
+          scale: 0.8
+        })
           .setLngLat([listing.coordinates.lng, listing.coordinates.lat])
+          .setPopup(popup)
           .addTo(map.current!)
+
         markers.current.push(marker)
       }
     })

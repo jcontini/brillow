@@ -5,8 +5,7 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   SortingState,
-  flexRender,
-  ColumnDef,
+  flexRender
 } from '@tanstack/react-table'
 import { FiChevronUp, FiChevronDown } from 'react-icons/fi'
 import { HouseListing } from '@/types'
@@ -16,7 +15,6 @@ import { useState, useMemo, useEffect } from 'react'
 import { PropertyDetails } from '../PropertyDetails'
 import { StarRating } from '../StarRating'
 import { Map } from '../Map'
-import { Terminal } from '../Terminal'
 
 export function ListingsTable() {
   const listings = useListingsStore((state) => state.listings)
@@ -172,7 +170,6 @@ export function ListingsTable() {
               </tbody>
             </table>
           </div>
-          <Terminal />
         </div>
         {selectedListing && (
           <div className="flex-shrink-0">

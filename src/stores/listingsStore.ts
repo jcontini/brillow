@@ -1,15 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { HouseListing } from '@/types'
-
-interface ListingsState {
-  listings: HouseListing[]
-  importListings: (newListings: HouseListing[]) => void
-  appendListings: (newListings: HouseListing[]) => void
-  addListing: (listing: HouseListing) => void
-  removeListing: (id: string) => void
-  updateListing: (id: string, updates: Partial<HouseListing>) => void
-}
+import type { ListingsState, HouseListing } from '@/types'
 
 export const useListingsStore = create<ListingsState>()(
   persist(

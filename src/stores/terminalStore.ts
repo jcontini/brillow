@@ -1,29 +1,14 @@
 import { create } from 'zustand'
+import type { LogType, LogMessage, TerminalState } from '@/types'
 
-type LogType = 'info' | 'error' | 'success'
-
-interface LogEntry {
-  id: number
-  timestamp: Date
-  message: string
-  type: LogType
-}
-
-interface TerminalStore {
-  logs: LogEntry[]
-  addLog: (message: string, type?: LogType) => void
-  clearLogs: () => void
-}
-
-export const useTerminalStore = create<TerminalStore>((set) => ({
-  logs: [],
-  addLog: (message, type = 'info') => set((state) => ({
-    logs: [...state.logs, {
-      id: Date.now(),
-      timestamp: new Date(),
-      message,
-      type
+export const useTerminalStore = create<TerminalState>((set) => ({
+  messages: [],
+  addLog: (text, type) => set((state) => ({
+    messages: [...state.messages, {
+      text,
+      type,
+      timestamp: Date.now()
     }]
   })),
-  clearLogs: () => set({ logs: [] })
+  clear: () => set({ messages: [] })
 })) 
