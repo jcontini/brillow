@@ -91,14 +91,11 @@ export function Map({ className = '' }: MapProps) {
     listings.forEach(listing => {
       if (listing.coordinates) {
         try {
-          const isSelected = listing.id === selectedListingId
-          
           // Create or update marker
           let marker = markersRef.current[listing.id]
           if (!marker) {
             marker = new mapboxgl.Marker({
               color: getRatingColor(listing.rating || 0),
-              scale: isSelected ? 1.2 : 0.8,
               anchor: 'bottom'
             })
             .setLngLat([listing.coordinates.lng, listing.coordinates.lat])
@@ -113,23 +110,11 @@ export function Map({ className = '' }: MapProps) {
           } else {
             // Update existing marker
             marker.setLngLat([listing.coordinates.lng, listing.coordinates.lat])
-            marker.getElement().style.transform = `scale(${isSelected ? 1.2 : 0.8})`
           }
 
           // Create or update popup
           let popup = popupsRef.current[listing.id]
           if (!popup) {
-            const popupContent = document.createElement('div')
-            popupContent.className = 'popup-content'
-            popupContent.innerHTML = `
-              <div class="popup-address">${listing.address}</div>
-              <div class="popup-details">
-                ${formatPrice(listing.price)} · 
-                ${listing.bedrooms} bed${listing.bedrooms !== 1 ? 's' : ''} · 
-                ${listing.bathrooms} bath${listing.bathrooms !== 1 ? 's' : ''}
-              </div>
-            `
-
             popup = new mapboxgl.Popup({
               offset: [0, -38],
               className: 'listing-popup',
@@ -137,13 +122,22 @@ export function Map({ className = '' }: MapProps) {
               closeOnClick: false,
               maxWidth: '300px'
             })
-            .setDOMContent(popupContent)
+            .setHTML(`
+              <div class="popup-content">
+                <div class="popup-address">${listing.address}</div>
+                <div class="popup-details">
+                  ${formatPrice(listing.price)} · 
+                  ${listing.bedrooms} bed${listing.bedrooms !== 1 ? 's' : ''} · 
+                  ${listing.bathrooms} bath${listing.bathrooms !== 1 ? 's' : ''}
+                </div>
+              </div>
+            `)
 
             popupsRef.current[listing.id] = popup
           }
 
           // Show/hide popup based on selection
-          if (isSelected) {
+          if (listing.id === selectedListingId) {
             marker.setPopup(popup)
             if (!popup.isOpen()) {
               popup.addTo(map.current!)
@@ -158,6 +152,22 @@ export function Map({ className = '' }: MapProps) {
       }
     })
   }, [listings, selectedListingId, setSelectedListing, addLog])
+
+  // Pan the map to the selected marker
+  useEffect(() => {
+    if (!map.current || !selectedListingId) return
+
+    const selectedListing = listings.find(listing => listing.id === selectedListingId)
+
+    if (selectedListing?.coordinates) {
+      map.current.flyTo({
+        center: [selectedListing.coordinates.lng, selectedListing.coordinates.lat],
+        zoom: 11,
+        essential: true,
+        duration: 500
+      })
+    }
+  }, [selectedListingId, listings])
 
   return (
     <div className="map-container">

@@ -270,6 +270,6 @@ body {
 
   /* Debug styles to help spot popup container */
   .listing-popup {
-    outline: 2px solid red; /* Temporary debug outline */
+    /* outline: 2px solid red; */ /* Temporary debug outline */
   }
 }
