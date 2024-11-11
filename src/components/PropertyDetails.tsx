@@ -82,7 +82,7 @@ export const PropertyDetails = ({ listing }: PropertyDetailsProps) => {
 
   return (
     <div className="property-details-panel">
-      <h3>Property Details</h3>
+      <h3>Pad Details</h3>
       
       <div className="details-grid">
         <div className="detail-item">

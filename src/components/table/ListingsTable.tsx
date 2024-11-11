@@ -169,7 +169,7 @@ export function ListingsTable() {
               {listings.length === 0 && (
                 <tr>
                   <td colSpan={columns.length} className="table-empty">
-                    No listings yet. Add your first property to get started.
+                    No pads yet. Add your first pad to get started.
                   </td>
                 </tr>
               )}
@@ -193,7 +193,7 @@ export function ListingsTable() {
           </div>
         ) : (
           <div className="glass-card flex items-center justify-center text-gray-500">
-            Select a property to view details
+            Select a pad to view details
           </div>
         )}
       </div>

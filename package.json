@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@radix-ui/react-dropdown-menu": "^2.1.2",
     "@tanstack/react-table": "^8.20.5",
     "@types/mapbox-gl": "^3.4.1",
     "date-fns": "^4.1.0",
