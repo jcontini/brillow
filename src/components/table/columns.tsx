@@ -1,7 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { HouseListing } from '@/types'
 import { StarRating } from '../StarRating'
-import { formatPrice, formatDate } from '@/utils/format'
+import { formatPrice, formatDate } from '../../utils/format'
 import { SiZillow, SiTrulia } from "react-icons/si"
 import { FaFacebookSquare } from "react-icons/fa"
 import { FiExternalLink } from "react-icons/fi"
@@ -71,7 +71,7 @@ export const columns: ColumnDef<HouseListing>[] = [
     cell: info => (
       <div className="table-cell-content">
         <StarRating 
-          rating={info.getValue() ?? 0}
+          rating={Number(info.getValue()) ?? 0}
           colorMode="gradient"
           onChange={(newRating) => {
             const id = (info.row.original as HouseListing).id

@@ -53,8 +53,8 @@ body {
   }
 
   .table-section {
-    @apply w-1/3;
-    min-width: 400px;
+    @apply w-[45%];
+    min-width: 500px;
   }
 
   .sidebar-section {
@@ -67,16 +67,18 @@ body {
   .map-section {
     @apply w-1/3;
     min-width: 350px;
+    height: 50%;
   }
 
   .details-section {
-    @apply w-1/3;
-    min-width: 350px;
+    @apply w-[22%];
+    min-width: 300px;
   }
 
   /* Map Container */
   .map-container {
-    @apply h-full w-full;
+    @apply w-full h-full;
+    min-height: 400px;
   }
 
   /* Property Details Panel */
@@ -213,7 +215,8 @@ body {
 
   /* Add this to ensure the glass-card in the map section takes full height */
   .map-section .glass-card {
-    height: 100%; /* This ensures the card takes full height of map-section */
+    height: 100%;
+    min-height: 400px;
   }
 
   /* Make sure mapbox controls show properly */
@@ -319,5 +322,16 @@ body {
 
   .star-rating {
     @apply flex items-center;
+  }
+
+  /* Remove steppers from number inputs */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
   }
 }

@@ -90,6 +90,7 @@ export const PropertyDetails = ({ listing }: PropertyDetailsProps) => {
           <StarRating 
             rating={localValues.rating ?? listing.rating}
             onChange={(newRating) => handleChange('rating', newRating)}
+            colorMode="gradient"
           />
         </div>
 
@@ -131,6 +132,7 @@ export const PropertyDetails = ({ listing }: PropertyDetailsProps) => {
             value={localValues.price ?? listing.price}
             onChange={e => handleChange('price', Number(e.target.value))}
             className="edit-input"
+            style={{ appearance: 'textfield' }}
           />
         </div>
 
@@ -141,6 +143,7 @@ export const PropertyDetails = ({ listing }: PropertyDetailsProps) => {
             value={localValues.squareFeet ?? listing.squareFeet}
             onChange={e => handleChange('squareFeet', Number(e.target.value))}
             className="edit-input"
+            style={{ appearance: 'textfield' }}
           />
         </div>
 
@@ -152,6 +155,7 @@ export const PropertyDetails = ({ listing }: PropertyDetailsProps) => {
               value={localValues.bedrooms ?? listing.bedrooms}
               onChange={e => handleChange('bedrooms', Number(e.target.value))}
               className="edit-input w-20"
+              style={{ appearance: 'textfield' }}
             />
             <span className="self-center">/</span>
             <input
@@ -159,6 +163,7 @@ export const PropertyDetails = ({ listing }: PropertyDetailsProps) => {
               value={localValues.bathrooms ?? listing.bathrooms}
               onChange={e => handleChange('bathrooms', Number(e.target.value))}
               className="edit-input w-20"
+              style={{ appearance: 'textfield' }}
             />
           </div>
         </div>
