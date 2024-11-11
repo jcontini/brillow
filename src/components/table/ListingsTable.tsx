@@ -38,6 +38,7 @@ export function ListingsTable() {
           cell: info => (
             <StarRating 
               rating={info.getValue()}
+              colorMode="gradient"
               onChange={(newRating) => {
                 const id = info.row.original.id
                 if (id) {

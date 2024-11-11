@@ -5,20 +5,9 @@ import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { useListingsStore } from '@/stores/listingsStore'
 import { useTerminalStore } from '@/stores/terminalStore'
+import { getRatingColor } from '@/utils/colors'
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || ''
-
-// Rating to color mapping function
-const getRatingColor = (rating: number): string => {
-  switch (rating) {
-    case 5: return '#22c55e' // Green for 5 stars
-    case 4: return '#3b82f6' // Blue for 4 stars
-    case 3: return '#f59e0b' // Yellow/Orange for 3 stars
-    case 2: return '#ef4444' // Red for 2 stars
-    case 1: return '#7f1d1d' // Dark red for 1 star
-    default: return 'rgba(255, 255, 255, 0.2)' // Default color for no rating
-  }
-}
 
 // Helper function to format price
 const formatPrice = (price: number) => {

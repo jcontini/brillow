@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { FaStar } from 'react-icons/fa'
+import { getRatingColor, getEmptyStarColor } from '@/utils/colors'
 
 interface StarRatingProps {
   rating?: number
@@ -9,34 +10,33 @@ interface StarRatingProps {
   colorMode?: 'gradient'
 }
 
-const getStarColor = (starPosition: number, rating: number | undefined) => {
-  if (!rating || starPosition > rating) return 'rgba(255, 255, 255, 0.2)' // Unfilled stars
+export function StarRating({ rating = 0, onChange, colorMode }: StarRatingProps) {
+  const [hoverRating, setHoverRating] = useState<number | null>(null)
   
-  // Color gradient from red (1) to green (5)
-  const colors = {
-    1: '#ef4444', // Red
-    2: '#f97316', // Orange
-    3: '#eab308', // Yellow
-    4: '#22c55e', // Green
-    5: '#10b981'  // Emerald
+  const getStarColor = (starPosition: number, currentRating: number) => {
+    if (!currentRating || starPosition > currentRating) {
+      return getEmptyStarColor()
+    }
+    return colorMode === 'gradient' 
+      ? getRatingColor(currentRating)
+      : '#eab308' // Default yellow for non-gradient mode
   }
   
-  return colors[rating as keyof typeof colors] || colors[3]
-}
-
-export function StarRating({ rating = 0, onChange, colorMode }: StarRatingProps) {
   return (
-    <div className="star-rating">
+    <div className="star-rating flex gap-0.5">
       {[1, 2, 3, 4, 5].map((star) => (
         <button
           key={star}
           onClick={() => onChange?.(star)}
-          className={`star-button ${star <= (rating || 0) ? 'filled' : ''} ${!onChange ? 'readonly' : ''}`}
-          style={colorMode === 'gradient' ? {
-            color: getStarColor(star, rating)
-          } : undefined}
+          onMouseEnter={() => setHoverRating(star)}
+          onMouseLeave={() => setHoverRating(null)}
+          className={`star-button ${!onChange ? 'readonly' : ''}`}
+          style={{
+            color: getStarColor(star, hoverRating || rating),
+            transition: 'color 150ms ease-in-out'
+          }}
         >
-          <FaStar />
+          <FaStar className="w-4 h-4" />
         </button>
       ))}
     </div>
