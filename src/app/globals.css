@@ -221,4 +221,56 @@ body {
     background: var(--surface);
     border-color: var(--accent-blue);
   }
+
+  .panel-header {
+    @apply flex justify-between items-center mb-6;
+  }
+
+  .icon-button {
+    @apply p-2 rounded-lg transition-all duration-200;
+    background: var(--surface-glass);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+  }
+
+  .icon-button:hover {
+    background: var(--surface);
+  }
+
+  .icon-button.success:hover {
+    border-color: #22c55e;
+    color: #22c55e;
+  }
+
+  .icon-button.danger:hover {
+    border-color: #ef4444;
+    color: #ef4444;
+  }
+
+  .edit-input {
+    @apply px-2 py-1 rounded bg-transparent;
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    background: var(--surface-glass);
+  }
+
+  .edit-input:focus {
+    @apply outline-none;
+    border-color: var(--accent-blue);
+  }
+
+  .edit-input:hover:not(:focus) {
+    border-color: var(--border-light);
+  }
+
+  /* Remove spinner buttons from number inputs */
+  .edit-input[type="number"]::-webkit-outer-spin-button,
+  .edit-input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .edit-input[type="number"] {
+    -moz-appearance: textfield; /* Firefox */
+  }
 }

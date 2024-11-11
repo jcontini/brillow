@@ -1,8 +1,21 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import { HouseListing } from "@/types"
 import { StarRating } from "../StarRating"
+import { format } from "date-fns"
+import { SiZillow, SiTrulia } from "react-icons/si"
+import { FaFacebookSquare } from "react-icons/fa"
+import { FiExternalLink } from "react-icons/fi"
+import { RealtorIcon } from '../icons/RealtorIcon'
 
 const columnHelper = createColumnHelper<HouseListing>()
+
+const getLinkIcon = (url: string) => {
+  if (url.includes('zillow.com')) return <SiZillow className="w-4 h-4" />
+  if (url.includes('trulia.com')) return <SiTrulia className="w-4 h-4" />
+  if (url.includes('facebook.com')) return <FaFacebookSquare className="w-4 h-4" />
+  if (url.includes('realtor.com')) return <RealtorIcon />
+  return <FiExternalLink className="w-4 h-4" />
+}
 
 export const columns = [
   columnHelper.accessor("address", {
@@ -11,14 +24,19 @@ export const columns = [
       const address = info.getValue()
       const url = info.row.original.link
       return (
-        <a 
-          href={url} 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="table-link"
-        >
-          {address}
-        </a>
+        <div className="flex items-center gap-2">
+          <a 
+            href={url} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="table-link"
+          >
+            {address}
+          </a>
+          <span className="text-accent-blue opacity-75">
+            {getLinkIcon(url)}
+          </span>
+        </div>
       )
     }
   }),
@@ -60,7 +78,7 @@ export const columns = [
     cell: info => {
       const date = info.getValue()
       try {
-        return new Date(date).toLocaleDateString()
+        return format(new Date(date), 'MMM d, yyyy')
       } catch {
         return ''
       }
@@ -71,7 +89,7 @@ export const columns = [
     cell: info => {
       const date = info.getValue()
       try {
-        return new Date(date).toLocaleDateString()
+        return format(new Date(date), 'MMM d, yyyy')
       } catch {
         return ''
       }
