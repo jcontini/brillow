@@ -1,31 +1,47 @@
 # Brillow
 
-Brillow is a tool designed to help people organize and track properties during their house hunting journey. It provides an intuitive interface for managing property listings, comparing options, and keeping notes on potential homes - all in one place.
+<img src=".github/images/brillow-preview.png" alt="Brillow Preview" width="100%" />
 
-## Key Features ✓
+Brillow is a modern house hunting companion that helps you track and compare properties with a beautiful, intuitive interface. Built with glass-morphism design and real-time interactions, it makes managing your house hunting journey a breeze.
 
-- [✓] Interactive property listing table with real-time editing
-- [✓] Property details panel with full listing information
+## Features
+
+### Core Functionality ✓
+- [✓] Interactive property table with real-time editing
+- [✓] Property details panel with comprehensive information
+- [✓] Interactive map view with property locations
 - [✓] 5-star rating system for ranking properties
-- [✓] Import/Export functionality to save and share listings
-- [✓] Source-specific icons for Zillow, Trulia, Facebook, and Realtor.com listings
-- [✓] Modern dark theme with glass-morphism design
+- [✓] Keyboard navigation (j/k) for quick property browsing
 
-## Coming Soon 🚀
+### Data Management ✓
+- [✓] Import/Export functionality (CSV)
+- [✓] Automatic address geocoding
+- [✓] Persistent local storage
+- [✓] Source-specific icons (Zillow, Trulia, Facebook, Realtor.com)
 
-- [ ] Sort and filter listings
-- [ ] Add new properties
-- [ ] Delete listings
-- [ ] Column reordering
-- [ ] Error notifications
+### User Interface ✓
+- [✓] Modern glass-morphism dark theme
+- [✓] Responsive layout with resizable columns
+- [✓] Smooth animations and transitions
+- [✓] Intuitive dropdown menus
+- [✓] Contextual property actions
+
+## Upcoming Features 🚀
+- [ ] Advanced filtering and sorting
+- [ ] Custom tags and categories
+- [ ] Multiple view layouts
+- [ ] Comparison mode
+- [ ] Cloud sync
+- [ ] Mobile optimization
 
 ## Tech Stack
-
 - Next.js 14 (App Router)
-- React 18
+- React 18 with Server Components
 - TypeScript
 - Tailwind CSS
 - TanStack Table v8
 - Zustand for state management
-- date-fns for date formatting
-- React Icons
+- Mapbox for mapping
+- Radix UI for accessible components
+
+## Development
