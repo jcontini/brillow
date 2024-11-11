@@ -27,9 +27,9 @@ export interface AppState {
     }
 }
 
-// Add this type augmentation
+// Update the type augmentation to include cell context
 declare module '@tanstack/react-table' {
   interface ColumnMeta<TData extends unknown, TValue> {
-    getCellStyles?: (value: TValue) => React.CSSProperties
+    getCellStyles?: (value: TValue, context: any) => React.CSSProperties
   }
 } 

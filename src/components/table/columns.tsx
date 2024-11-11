@@ -48,16 +48,26 @@ const getPricePerSqFtColor = (value: number | null) => {
   return `rgba(96, 165, 250, ${opacity * 0.2})` // Using accent blue with dynamic opacity
 }
 
-const getValueBasedColor = (value: number, { min, max }: { min: number, max: number }) => {
-  if (value === null) return ''
+const getValueBasedColor = (
+  value: number, 
+  values: number[], 
+  { reverse = false }: { reverse?: boolean } = {}
+) => {
+  if (!value || !values.length) return ''
+  
+  const min = Math.min(...values)
+  const max = Math.max(...values)
+  
+  if (min === max) return ''
   
   // Calculate opacity based on where the value falls in the range
-  const opacity = Math.max(0, Math.min(1, 
-    (value - min) / (max - min)
-  ))
+  let opacity = (value - min) / (max - min)
+  
+  // Reverse the opacity if needed (e.g., for price/sqft where lower is better)
+  if (reverse) opacity = 1 - opacity
   
   // Return background color with calculated opacity
-  return `rgba(96, 165, 250, ${opacity * 0.2})` // Using accent blue with dynamic opacity
+  return `rgba(96, 165, 250, ${opacity * 0.2})`
 }
 
 export const columns = [
@@ -102,9 +112,15 @@ export const columns = [
       </div>
     ),
     meta: {
-      getCellStyles: (value: number) => ({
-        backgroundColor: getValueBasedColor(value, { min: 1, max: 4 })
-      })
+      getCellStyles: (value: number, context: any) => {
+        const allValues = context.table.options.data
+          .map((row: HouseListing) => row.bedrooms)
+          .filter(Boolean)
+        
+        return {
+          backgroundColor: getValueBasedColor(value, allValues)
+        }
+      }
     }
   }),
   columnHelper.accessor("bathrooms", {
@@ -116,9 +132,15 @@ export const columns = [
       </div>
     ),
     meta: {
-      getCellStyles: (value: number) => ({
-        backgroundColor: getValueBasedColor(value, { min: 1, max: 3 })
-      })
+      getCellStyles: (value: number, context: any) => {
+        const allValues = context.table.options.data
+          .map((row: HouseListing) => row.bathrooms)
+          .filter(Boolean)
+        
+        return {
+          backgroundColor: getValueBasedColor(value, allValues)
+        }
+      }
     }
   }),
   columnHelper.accessor("price", {
@@ -150,9 +172,19 @@ export const columns = [
       return `$${value.toFixed(2)}`
     },
     meta: {
-      getCellStyles: (value: number | null) => ({
-        backgroundColor: getPricePerSqFtColor(value)
-      })
+      getCellStyles: (value: number | null, context: any) => {
+        if (value === null) return {}
+        
+        const allValues = context.table.options.data
+          .map((row: HouseListing) => 
+            row.price && row.squareFeet ? row.price / row.squareFeet : null
+          )
+          .filter((v: number | null): v is number => v !== null)
+        
+        return {
+          backgroundColor: getValueBasedColor(value, allValues, { reverse: true })
+        }
+      }
     }
   }),
   columnHelper.accessor("availability", {

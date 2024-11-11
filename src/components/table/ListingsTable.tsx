@@ -144,7 +144,10 @@ export function ListingsTable() {
                     className="table-cell"
                     style={{ 
                       width: cell.column.getSize(),
-                      ...(cell.column.columnDef.meta?.getCellStyles?.(cell.getValue()) || {})
+                      ...(cell.column.columnDef.meta?.getCellStyles?.(
+                        cell.getValue(),
+                        cell.getContext()
+                      ) || {})
                     }}
                   >
                     {flexRender(
