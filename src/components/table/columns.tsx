@@ -48,14 +48,29 @@ const getPricePerSqFtColor = (value: number | null) => {
   return `rgba(96, 165, 250, ${opacity * 0.2})` // Using accent blue with dynamic opacity
 }
 
+const getValueBasedColor = (value: number, { min, max }: { min: number, max: number }) => {
+  if (value === null) return ''
+  
+  // Calculate opacity based on where the value falls in the range
+  const opacity = Math.max(0, Math.min(1, 
+    (value - min) / (max - min)
+  ))
+  
+  // Return background color with calculated opacity
+  return `rgba(96, 165, 250, ${opacity * 0.2})` // Using accent blue with dynamic opacity
+}
+
 export const columns = [
   columnHelper.accessor("address", {
-    header: "Address",
+    header: "Pad",
     cell: info => {
       const address = info.getValue()
       const url = info.row.original.link
       return (
         <div className="flex items-center gap-2">
+          <span className="text-accent-blue opacity-75">
+            {getLinkIcon(url)}
+          </span>
           <a 
             href={url} 
             target="_blank" 
@@ -64,9 +79,6 @@ export const columns = [
           >
             {address}
           </a>
-          <span className="text-accent-blue opacity-75">
-            {getLinkIcon(url)}
-          </span>
         </div>
       )
     }
@@ -76,7 +88,8 @@ export const columns = [
     cell: info => (
       <StarRating 
         rating={info.getValue()}
-        onChange={undefined}  // We'll handle this in the table component
+        onChange={undefined}
+        colorMode="gradient"
       />
     )
   }),
@@ -87,7 +100,12 @@ export const columns = [
         <IoBedOutline className="w-4 h-4 opacity-75" />
         <span>{info.getValue()}</span>
       </div>
-    )
+    ),
+    meta: {
+      getCellStyles: (value: number) => ({
+        backgroundColor: getValueBasedColor(value, { min: 1, max: 4 })
+      })
+    }
   }),
   columnHelper.accessor("bathrooms", {
     header: "Baths",
@@ -96,7 +114,12 @@ export const columns = [
         <FaShower className="w-3.5 h-3.5 opacity-75" />
         <span>{info.getValue()}</span>
       </div>
-    )
+    ),
+    meta: {
+      getCellStyles: (value: number) => ({
+        backgroundColor: getValueBasedColor(value, { min: 1, max: 3 })
+      })
+    }
   }),
   columnHelper.accessor("price", {
     header: "Price",
@@ -112,7 +135,7 @@ export const columns = [
   }),
   columnHelper.accessor("squareFeet", {
     header: "Sq.Ft",
-    cell: info => info.getValue()
+    cell: info => new Intl.NumberFormat('en-US').format(info.getValue())
   }),
   columnHelper.accessor(row => {
     if (!row.price || !row.squareFeet || row.squareFeet === 0) return null
