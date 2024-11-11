@@ -29,7 +29,7 @@ body {
 @layer components {
   /* Table Container */
   .table-container {
-    @apply relative overflow-x-auto rounded-xl;
+    @apply relative rounded-xl;
     background: var(--surface-glass);
     backdrop-filter: blur(12px);
     border: 1px solid var(--border);
@@ -37,6 +37,24 @@ body {
       0 4px 24px -1px rgba(0, 0, 0, 0.2),
       0 0 0 1px var(--border),
       inset 0 0 32px rgba(0, 0, 0, 0.2);
+    
+    /* Only show scrollbar when needed */
+    overflow-x: auto;
+    
+    /* Hide scrollbar by default */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    
+    /* Show scrollbar on hover only if content overflows */
+    &:hover {
+      &::-webkit-scrollbar {
+        display: block;
+      }
+      scrollbar-width: thin;
+    }
   }
 
   /* Base Table */
@@ -117,6 +135,7 @@ body {
     display: flex;
     gap: 2rem;
     padding: 2rem;
+    max-width: 100%;  /* Ensure it doesn't overflow viewport */
   }
 
   /* Property Details Panel */
@@ -313,4 +332,45 @@ body {
     @apply opacity-100;
     border-color: var(--border);
   }
+}
+
+/* Update scrollbar styling */
+::-webkit-scrollbar {
+  height: 8px;  /* For horizontal scrollbar */
+  width: 8px;   /* For vertical scrollbar */
+  display: none; /* Hide by default */
+}
+
+/* Only show scrollbar when overflow exists */
+*:hover::-webkit-scrollbar {
+  display: block;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;  /* Dark theme track */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #404040;  /* Dark theme thumb */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4a4a4a;  /* Slightly lighter on hover */
+}
+
+/* Add this to any container that might scroll */
+.scroll-container {
+  overflow-x: auto;
+  scrollbar-gutter: stable;  /* Prevents layout shift when scrollbar appears */
+  
+  /* Only show scrollbar if content overflows */
+  overflow-x: auto;
+  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+}
+
+.scroll-container:hover {
+  scrollbar-width: thin;  /* Firefox */
 }
