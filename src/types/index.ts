@@ -13,6 +13,10 @@ export interface HouseListing {
     availability: string   // ISO date format
     notes: string
     dateAdded: string     // ISO date format
+    coordinates?: {
+        lat: number
+        lng: number
+    } | null  // null indicates geocoding failed, undefined means not tried yet
 }
 
 export interface AppState {
