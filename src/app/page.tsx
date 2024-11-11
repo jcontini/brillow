@@ -9,9 +9,9 @@ export default function Home() {
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Brillow</h1>
         <div className="flex gap-2">
-          <GeocodeAllButton />
-          <ImportButton />
-          <ExportButton />
+          <GeocodeAllButton className="button" />
+          <ImportButton className="button" />
+          <ExportButton className="button" />
         </div>
       </div>
       <ListingsTable />

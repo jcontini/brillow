@@ -3,7 +3,6 @@
 @tailwind utilities;
 
 :root {
-  /* Modern dark theme colors */
   --background: #0a0a0a;
   --surface: rgba(30, 30, 30, 0.7);
   --surface-glass: rgba(40, 40, 40, 0.4);
@@ -24,12 +23,18 @@ body {
     radial-gradient(circle at top right, var(--accent-purple), transparent 40%),
     radial-gradient(circle at bottom left, var(--accent-blue), transparent 40%);
   min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+.app-container {
+  padding: 1rem;
 }
 
 @layer components {
-  /* Table Container */
-  .table-container {
-    @apply relative rounded-xl;
+  /* Card Component */
+  .glass-card {
+    @apply rounded-xl;
     background: var(--surface-glass);
     backdrop-filter: blur(12px);
     border: 1px solid var(--border);
@@ -37,22 +42,34 @@ body {
       0 4px 24px -1px rgba(0, 0, 0, 0.2),
       0 0 0 1px var(--border),
       inset 0 0 32px rgba(0, 0, 0, 0.2);
-    
-    /* Always hide horizontal scrollbar */
-    overflow-x: auto;
-    scrollbar-width: none;  /* Firefox */
-    -ms-overflow-style: none;  /* IE and Edge */
-    &::-webkit-scrollbar {
-      display: none;  /* Chrome, Safari, Opera */
-    }
   }
 
-  /* Base Table */
+  /* Layout */
+  .content-wrapper {
+    display: flex;
+    gap: 8px;
+  }
+
+  .table-section {
+    width: 70%;
+  }
+
+  .map-section {
+    width: 30%;
+    height: 50vh;
+    position: sticky;
+    top: 8px;
+  }
+
+  /* Table Styles */
+  .table-container {
+    margin: 8px;
+  }
+
   .table-base {
     @apply w-full text-sm border-collapse;
   }
 
-  /* Header Styles */
   .table-header {
     @apply px-3 py-2 font-medium relative text-left border-r last:border-r-0 whitespace-nowrap cursor-pointer;
     background: var(--header-bg);
@@ -60,401 +77,101 @@ body {
     color: var(--text-primary);
   }
 
-  .table-header:hover {
-    background: var(--surface);
-  }
-
-  /* Header Row */
   .table-header-row {
     @apply border-b;
     border-color: var(--border);
   }
 
-  /* Resize Handle */
-  .resize-handle {
-    @apply absolute -right-[1px] top-0 h-full w-[1px] cursor-col-resize select-none touch-none;
-  }
-  .resize-handle-active {
-    @apply bg-blue-500;
-    box-shadow: 0 0 10px var(--accent-blue);
-  }
-  .resize-handle-inactive {
-    @apply bg-gray-600 hover:bg-blue-500;
-    transition: all 0.2s ease;
-  }
-
-  /* Table Body */
   .table-body {
     @apply divide-y;
-    --tw-divide-opacity: 0.1;
     & > tr {
       border-color: rgba(255, 255, 255, 0.1);
     }
   }
 
-  /* Table Row */
-  .table-row {
-    background: transparent;
-  }
-  .table-row:hover {
-    background: var(--surface);
-  }
-
-  /* Table Cell */
   .table-cell {
     @apply px-3 py-2 whitespace-nowrap border-r last:border-r-0;
     color: var(--text-secondary);
     border-color: rgba(255, 255, 255, 0.06);
   }
 
-  /* Empty State */
-  .table-empty {
-    @apply px-6 py-8 text-center;
-    color: var(--text-secondary);
-    background: var(--surface);
-  }
-
-  /* Link styles */
-  .table-link {
-    @apply transition-all duration-200;
-    color: var(--accent-blue);
-  }
-  .table-link:hover {
-    @apply underline;
-    text-shadow: 0 0 8px var(--accent-glow);
-  }
-
-  .main-content {
-    display: flex;
-    height: 100vh;
-    width: 100%;
-    overflow: hidden;
-  }
-
-  .table-container {
-    overflow: auto;
-    height: 100vh;
-    margin: 8px;
-    border-radius: 12px;
-    background: var(--surface-glass);
-    border: 1px solid var(--border);
-  }
-
-  /* Property Details Panel */
-  .property-details-panel {
-    @apply w-[400px] p-6 sticky top-0;
-    background: var(--surface-glass);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    box-shadow: 
-      0 4px 24px -1px rgba(0, 0, 0, 0.2),
-      0 0 0 1px var(--border),
-      inset 0 0 32px rgba(0, 0, 0, 0.2);
-    margin: 8px 8px 8px 0;
-    height: calc(100vh - 16px);
-    overflow-y: auto;
-  }
-
-  .property-details-panel h3 {
-    @apply m-0 mb-6 text-lg font-medium;
-    color: var(--text-primary);
-  }
-
-  .details-grid {
-    @apply flex flex-col gap-4;
-  }
-
-  .detail-item {
-    @apply flex flex-col gap-1;
-  }
-
-  .detail-item label {
-    @apply text-sm;
-    color: var(--text-secondary);
-  }
-
-  .detail-item span {
-    color: var(--text-primary);
-  }
-
-  .detail-item.notes {
-    @apply mt-2 pt-4;
-    border-top: 1px solid var(--border);
-  }
-
-  .detail-item.notes p {
-    @apply m-0 text-sm;
-    color: var(--text-secondary);
-    white-space: pre-wrap;
-  }
-
-  /* Update the selected state styling */
+  /* Selected Row State */
   tr.selected {
-    background: rgba(50, 50, 50, 0.95); /* Lighter than --surface */
-    /* Enhance the glow effect */
+    background: rgba(50, 50, 50, 0.95);
     box-shadow: 
       inset 0 0 0 1px var(--accent-blue),
       0 0 16px var(--accent-glow);
     
-    /* Make the text more prominent */
     & td {
       color: var(--text-primary);
     }
   }
 
-  /* Keep hover state less prominent */
   tr:hover:not(.selected) {
     background: var(--surface);
-    opacity: 0.8;
   }
 
-  .star-rating {
-    @apply flex gap-0;
+  /* Map Container */
+  .map-container {
+    height: 100%;
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
   }
 
-  .star-button {
-    @apply p-0 transition-colors;
-    color: var(--text-secondary);
-    opacity: 0.5;
+  /* Property Details Panel */
+  .property-details-panel {
+    @apply w-[400px] p-6;
+    background: var(--surface-glass);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin: 8px 8px 8px 0;
   }
 
-  .star-button svg {
-    @apply w-4 h-4;
-  }
-
-  .star-button:hover:not(.readonly) {
-    transform: scale(1.1);
-  }
-
-  .star-button.filled {
-    color: var(--accent-blue);
-    opacity: 1;
-  }
-
-  .star-button.readonly {
-    @apply cursor-default;
-  }
-
-  .header-container {
-    @apply flex justify-between items-center p-8;
-  }
-
-  .app-title {
-    @apply text-4xl font-medium;
-    color: var(--text-primary);
-    text-shadow: 0 0 20px var(--accent-glow);
-  }
-
-  .button-group {
-    @apply flex gap-2;
-  }
-
-  .action-button {
-    @apply flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 cursor-pointer;
+  /* Button Styles */
+  .button {
+    @apply flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200;
     background: var(--surface-glass);
     border: 1px solid var(--border);
     color: var(--text-primary);
-  }
-
-  .action-button:hover {
-    background: var(--surface);
-    border-color: var(--accent-blue);
-  }
-
-  .panel-header {
-    @apply flex justify-between items-center mb-6;
-  }
-
-  .icon-button {
-    @apply p-2 rounded-lg transition-all duration-200;
-    background: var(--surface-glass);
-    border: 1px solid var(--border);
-    color: var(--text-primary);
-  }
-
-  .icon-button:hover {
-    background: var(--surface);
-  }
-
-  .icon-button.success:hover {
-    border-color: #22c55e;
-    color: #22c55e;
-  }
-
-  .icon-button.danger:hover {
-    border-color: #ef4444;
-    color: #ef4444;
-  }
-
-  .edit-input {
-    @apply px-2 py-1 rounded bg-transparent;
-    border: 1px solid var(--border);
-    color: var(--text-primary);
-    background: var(--surface-glass);
-  }
-
-  .edit-input:focus {
-    @apply outline-none;
-    border-color: var(--accent-blue);
-  }
-
-  .edit-input:hover:not(:focus) {
-    border-color: var(--border-light);
-  }
-
-  /* Remove spinner buttons from number inputs */
-  .edit-input[type="number"]::-webkit-outer-spin-button,
-  .edit-input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-
-  .edit-input[type="number"] {
-    -moz-appearance: textfield; /* Firefox */
-  }
-
-  .modal-backdrop {
-    @apply fixed inset-0 flex items-center justify-center z-50;
-    background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(4px);
   }
 
-  .modal-content {
-    @apply p-6 rounded-xl max-w-md w-full;
-    background: var(--surface-glass);
-    border: 1px solid var(--border);
-    box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2);
+  .button:hover {
+    background: var(--surface);
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 12px var(--accent-glow);
   }
 
-  .modal-title {
-    @apply text-xl font-medium mb-4;
-    color: var(--text-primary);
+  .button:active {
+    transform: translateY(1px);
   }
 
-  .modal-description {
-    @apply mb-6;
-    color: var(--text-secondary);
+  .button-primary {
+    @apply button;
+    background: var(--accent-blue);
+    border-color: transparent;
   }
 
-  .modal-buttons {
-    @apply flex flex-col gap-2;
+  .button-primary:hover {
+    background: color-mix(in srgb, var(--accent-blue) 90%, white);
+    border-color: transparent;
   }
 
-  .action-button.secondary {
-    @apply opacity-75;
+  /* Add this to ensure the glass-card in the map section takes full height */
+  .map-section .glass-card {
+    height: 100%; /* This ensures the card takes full height of map-section */
   }
 
-  .action-button.secondary:hover {
-    @apply opacity-100;
-    border-color: var(--border);
+  /* Make sure mapbox controls show properly */
+  .mapboxgl-canvas {
+    width: 100% !important;
+    height: 100% !important;
   }
 
-  .terminal-container {
-    @apply bg-[var(--surface-glass)] rounded-lg border border-[var(--border)] backdrop-blur-md;
-    height: 200px;
-    margin: 8px 0;
+  .mapboxgl-map {
+    height: 100%;
+    width: 100%;
   }
-
-  .terminal-header {
-    @apply flex justify-between items-center px-4 py-2 border-b border-[var(--border)];
-  }
-
-  .terminal-content {
-    @apply p-4 space-y-1 overflow-y-auto;
-    height: calc(200px - 37px); /* Container height minus header height */
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 0.8rem;
-  }
-
-  .terminal-entry {
-    @apply flex gap-2 items-start;
-  }
-
-  .terminal-entry .timestamp {
-    @apply opacity-50 flex-shrink-0;
-  }
-
-  .terminal-entry .message {
-    @apply break-all;
-  }
-
-  .terminal-entry.error .message {
-    @apply text-red-400;
-  }
-
-  .terminal-entry.success .message {
-    @apply text-green-400;
-  }
-
-  .terminal-entry.info .message {
-    @apply text-blue-400;
-  }
-
-  /* Add to your existing terminal styles */
-  .terminal-drag-handle {
-    @apply w-4 h-1 rounded-full bg-gray-600 cursor-ns-resize hover:bg-gray-500 transition-colors;
-  }
-
-  .terminal-container {
-    transition: height 0.1s ease;
-    min-height: 100px;
-    max-height: 800px;
-  }
-}
-
-/* Update scrollbar styling */
-::-webkit-scrollbar {
-  height: 8px;  /* For horizontal scrollbar */
-  width: 8px;   /* For vertical scrollbar */
-  display: none; /* Hide by default */
-}
-
-/* Only show scrollbar when overflow exists */
-*:hover::-webkit-scrollbar {
-  display: block;
-}
-
-::-webkit-scrollbar-track {
-  background: #1a1a1a;  /* Dark theme track */
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #404040;  /* Dark theme thumb */
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #4a4a4a;  /* Slightly lighter on hover */
-}
-
-/* Add this to any container that might scroll */
-.scroll-container {
-  overflow-x: auto;
-  scrollbar-gutter: stable;  /* Prevents layout shift when scrollbar appears */
-  
-  /* Only show scrollbar if content overflows */
-  overflow-x: auto;
-  scrollbar-width: none;  /* Firefox */
-  -ms-overflow-style: none;  /* IE and Edge */
-}
-
-.scroll-container:hover {
-  scrollbar-width: thin;  /* Firefox */
-}
-
-/* Make sure mapbox controls show properly */
-.mapboxgl-canvas {
-  width: 100% !important;
-  height: 100% !important;
-}
-
-/* Add styles for the map container */
-.map-container {
-  margin: 8px;
-  border-radius: 12px;
-  overflow: hidden;  /* This ensures the map respects the border radius */
-  height: calc(100vh - 16px);  /* Account for margins */
-  border: 1px solid var(--border);
 }

@@ -1,23 +1,13 @@
 "use client"
 
-import { useListingsStore } from "@/stores/listingsStore"
-import { createExportData, downloadJson } from "@/utils/importExport"
-import { FiDownload } from "react-icons/fi"
+import { ButtonHTMLAttributes } from 'react'
+import { FiDownload } from 'react-icons/fi'
 
-export function ExportButton() {
-  const listings = useListingsStore((state) => state.listings)
-  
-  const handleExport = () => {
-    const exportData = createExportData(listings)
-    const filename = `brillow_export_${new Date().toISOString().split('T')[0]}.json`
-    downloadJson(exportData, filename)
-  }
+export function ExportButton({ className, ...props }: ButtonHTMLAttributes<HTMLButtonElement>) {
+  // ... existing component logic
 
   return (
-    <button
-      onClick={handleExport}
-      className="action-button"
-    >
+    <button className={className} {...props}>
       <FiDownload className="w-4 h-4" />
       <span>Export Listings</span>
     </button>

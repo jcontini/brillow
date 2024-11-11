@@ -85,91 +85,89 @@ export function ListingsTable() {
   }, [table, selectedListing])
 
   return (
-    <div className="main-content flex">
-      <div className="w-[70%] flex">
-        <div className="flex-1 flex flex-col">
-          <div className="table-container" style={{ maxHeight: '600px' }}>
-            <table className="table-base">
-              <thead className="sticky top-0 z-10 bg-[var(--surface-glass)]">
-                {table.getHeaderGroups().map(headerGroup => (
-                  <tr key={headerGroup.id} className="table-header-row">
-                    {headerGroup.headers.map(header => (
-                      <th
-                        key={header.id}
-                        className="table-header"
-                        style={{ width: header.getSize() }}
-                        onClick={header.column.getToggleSortingHandler()}
-                      >
-                        <div className="flex items-center gap-2">
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                          {header.column.getIsSorted() && (
-                            <span className="text-accent-blue">
-                              {header.column.getIsSorted() === 'asc' ? (
-                                <FiChevronUp className="w-4 h-4" />
-                              ) : (
-                                <FiChevronDown className="w-4 h-4" />
-                              )}
-                            </span>
-                          )}
-                        </div>
-                        {header.column.getCanResize() && (
-                          <div
-                            onMouseDown={header.getResizeHandler()}
-                            onTouchStart={header.getResizeHandler()}
-                            className={`resize-handle ${
-                              header.column.getIsResizing() 
-                                ? 'resize-handle-active' 
-                                : 'resize-handle-inactive'
-                            }`}
-                            onClick={e => e.stopPropagation()}
-                          />
-                        )}
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-              <tbody className="table-body">
-                {table.getRowModel().rows.map(row => (
-                  <tr 
-                    key={row.id}
-                    onClick={() => setSelectedListing(row.original)}
-                    className={selectedListing?.id === row.original.id ? 'selected' : ''}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    {row.getVisibleCells().map(cell => (
-                      <td
-                        key={cell.id}
-                        className="table-cell"
-                        style={{ 
-                          width: cell.column.getSize(),
-                          ...(cell.column.columnDef.meta?.getCellStyles?.(
-                            cell.getValue(),
-                            cell.getContext()
-                          ) || {})
-                        }}
-                      >
+    <div className="content-wrapper">
+      <div className="table-section">
+        <div className="glass-card table-container">
+          <table className="table-base">
+            <thead className="sticky top-0 z-10 bg-[var(--surface-glass)]">
+              {table.getHeaderGroups().map(headerGroup => (
+                <tr key={headerGroup.id} className="table-header-row">
+                  {headerGroup.headers.map(header => (
+                    <th
+                      key={header.id}
+                      className="table-header"
+                      style={{ width: header.getSize() }}
+                      onClick={header.column.getToggleSortingHandler()}
+                    >
+                      <div className="flex items-center gap-2">
                         {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
+                          header.column.columnDef.header,
+                          header.getContext()
                         )}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-                {listings.length === 0 && (
-                  <tr>
-                    <td colSpan={columns.length} className="table-empty">
-                      No listings yet. Add your first property to get started.
+                        {header.column.getIsSorted() && (
+                          <span className="text-accent-blue">
+                            {header.column.getIsSorted() === 'asc' ? (
+                              <FiChevronUp className="w-4 h-4" />
+                            ) : (
+                              <FiChevronDown className="w-4 h-4" />
+                            )}
+                          </span>
+                        )}
+                      </div>
+                      {header.column.getCanResize() && (
+                        <div
+                          onMouseDown={header.getResizeHandler()}
+                          onTouchStart={header.getResizeHandler()}
+                          className={`resize-handle ${
+                            header.column.getIsResizing() 
+                              ? 'resize-handle-active' 
+                              : 'resize-handle-inactive'
+                          }`}
+                          onClick={e => e.stopPropagation()}
+                        />
+                      )}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody className="table-body">
+              {table.getRowModel().rows.map(row => (
+                <tr 
+                  key={row.id}
+                  onClick={() => setSelectedListing(row.original)}
+                  className={selectedListing?.id === row.original.id ? 'selected' : ''}
+                  style={{ cursor: 'pointer' }}
+                >
+                  {row.getVisibleCells().map(cell => (
+                    <td
+                      key={cell.id}
+                      className="table-cell"
+                      style={{ 
+                        width: cell.column.getSize(),
+                        ...(cell.column.columnDef.meta?.getCellStyles?.(
+                          cell.getValue(),
+                          cell.getContext()
+                        ) || {})
+                      }}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                  ))}
+                </tr>
+              ))}
+              {listings.length === 0 && (
+                <tr>
+                  <td colSpan={columns.length} className="table-empty">
+                    No listings yet. Add your first property to get started.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
         {selectedListing && (
           <div className="flex-shrink-0">
@@ -177,8 +175,10 @@ export function ListingsTable() {
           </div>
         )}
       </div>
-      <div className="w-[30%]">
-        <Map />
+      <div className="map-section">
+        <div className="glass-card">
+          <Map />
+        </div>
       </div>
     </div>
   )

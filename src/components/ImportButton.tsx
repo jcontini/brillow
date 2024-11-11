@@ -5,8 +5,9 @@ import { validateImportData } from '@/utils/importExport'
 import { FiUpload } from 'react-icons/fi'
 import { useState, useRef } from 'react'
 import { ImportModal } from './ImportModal'
+import { ButtonHTMLAttributes } from 'react'
 
-export function ImportButton() {
+export function ImportButton({ className, ...props }: ButtonHTMLAttributes<HTMLButtonElement>) {
   const importListings = useListingsStore((state) => state.importListings)
   const appendListings = useListingsStore((state) => state.appendListings)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -49,7 +50,7 @@ export function ImportButton() {
 
   return (
     <>
-      <label className="action-button">
+      <label className={`action-button ${className}`}>
         <FiUpload className="w-4 h-4" />
         <span>Import Listings</span>
         <input
