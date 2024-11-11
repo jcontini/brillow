@@ -4,7 +4,6 @@ import { useState, useEffect } from "react"
 import { HouseListing } from "@/types"
 import { StarRating } from "./StarRating"
 import { useListingsStore } from "@/stores/listingsStore"
-import { format } from "date-fns"
 import { SiZillow, SiTrulia } from "react-icons/si"
 import { FaFacebookSquare } from "react-icons/fa"
 import { FiExternalLink, FiMapPin } from "react-icons/fi"
@@ -119,7 +118,7 @@ export const PropertyDetails = ({ listing }: PropertyDetailsProps) => {
           <label>Neighborhood</label>
           <input
             type="text"
-            value={localValues.neighborhood ?? listing.neighborhood}
+            value={localValues.neighborhood ?? listing.neighborhood ?? ''}
             onChange={e => handleChange('neighborhood', e.target.value)}
             className="edit-input"
           />

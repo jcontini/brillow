@@ -176,14 +176,24 @@ export function ListingsTable() {
           </table>
         </div>
       </div>
-      <div className="sidebar-section">
-        <div className="map-container glass-card mb-4">
+      
+      <div className="map-section">
+        <div className="glass-card">
           <Map />
         </div>
-        {selectedListingId && (
-          <PropertyDetails 
-            listing={listings.find(l => l.id === selectedListingId)!} 
-          />
+      </div>
+      
+      <div className="details-section">
+        {selectedListingId ? (
+          <div className="glass-card">
+            <PropertyDetails 
+              listing={listings.find(l => l.id === selectedListingId)!} 
+            />
+          </div>
+        ) : (
+          <div className="glass-card flex items-center justify-center text-gray-500">
+            Select a property to view details
+          </div>
         )}
       </div>
     </div>

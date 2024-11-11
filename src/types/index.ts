@@ -4,6 +4,7 @@ import { CellContext, RowData } from '@tanstack/react-table'
 export interface HouseListing {
   id: string
   address: string
+  neighborhood?: string
   price: number
   bedrooms: number
   bathrooms: number
@@ -11,7 +12,7 @@ export interface HouseListing {
   availability: string
   dateAdded: string
   link: string
-  coordinates?: Coordinates
+  coordinates?: Coordinates | null
   rating?: number
   notes?: string
 }
